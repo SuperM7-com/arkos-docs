@@ -1,0 +1,33 @@
+:root {
+  --ifm-color-primary: #0ea5e9; /* sky-500 */
+  --ifm-color-primary-dark: #0284c7; /* sky-600 */
+  --ifm-color-primary-darker: #0369a1; /* sky-700 */
+  --ifm-color-primary-darkest: #075985; /* sky-800 */
+  --ifm-color-primary-light: #38bdf8; /* sky-400 */
+  --ifm-color-primary-lighter: #7dd3fc; /* sky-300 */
+  --ifm-color-primary-lightest: #bae6fd; /* sky-200 */
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(
+    14,
+    165,
+    233,
+    0.1
+  ); /* sky-500 with opacity */
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme="dark"] {
+  --ifm-color-primary: #38bdf8; /* sky-400 */
+  --ifm-color-primary-dark: #0ea5e9; /* sky-500 */
+  --ifm-color-primary-darker: #0284c7; /* sky-600 */
+  --ifm-color-primary-darkest: #0369a1; /* sky-700 */
+  --ifm-color-primary-light: #7dd3fc; /* sky-300 */
+  --ifm-color-primary-lighter: #bae6fd; /* sky-200 */
+  --ifm-color-primary-lightest: #e0f2fe; /* sky-100 */
+  --docusaurus-highlighted-code-line-bg: rgba(
+    56,
+    189,
+    248,
+    0.3
+  ); /* sky-400 with opacity */
+}
