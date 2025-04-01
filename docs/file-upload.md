@@ -76,5 +76,5 @@ Common issues and solutions:
 
 ## Next Steps
 
-- [Validation](./validation.md) - Learn about data validation
-- [Interceptors](./interceptors.md) - Customize request handling
+- [Validation](./validation) - Learn about data validation
+- [Interceptors](./interceptors) - Customize request handling

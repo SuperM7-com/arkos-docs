@@ -60,11 +60,11 @@ The name "Arkos" comes from the Greek word "ἀρχή" (Arkhē), meaning "beginn
 
 ## Next Steps
 
-- [Getting Started](./getting-started.md) - Set up your first Arkos project
-- [Authentication](./setting-auth-and-roles.md) - Learn about auth and user roles
-- [File Upload](./file-upload.md) - Handle file uploads and optimization
-- [Validation](./validation.md) - Implement data validation
-- [Interceptors](./interceptors.md) - Use middleware and interceptors
+- [Getting Started](./getting-started) - Set up your first Arkos project
+- [Authentication](./setting-auth-and-roles) - Learn about auth and user roles
+- [File Upload](./file-upload) - Handle file uploads and optimization
+- [Validation](./validation) - Implement data validation
+- [Interceptors](./interceptors) - Use middleware and interceptors
 
 ---
 

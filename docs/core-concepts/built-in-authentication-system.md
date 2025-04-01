@@ -36,7 +36,7 @@ Read more about to understand how the whole Arkos Built-in Auth System.
 
 ## How It Works
 
-In order to use the Built-in Auth System in **Arkos** there are some things that you must setup and those things differs slightly between the both approaches (Static RBAC and Dynamic RBAC), below you have an overview in form of key points to setup and use the Built-in Auth System. Or if you want, you can also dive directly to a full detail documentation on how to set this up in your project using the Static RBAC approach [Clicking Here](/docs/advanced-guide/static-rbac-authentication.md).
+In order to use the Built-in Auth System in **Arkos** there are some things that you must setup and those things differs slightly between the both approaches (Static RBAC and Dynamic RBAC), below you have an overview in form of key points to setup and use the Built-in Auth System. Or if you want, you can also dive directly to a full detail documentation on how to set this up in your project using the Static RBAC approach [Clicking Here](/docs/advanced-guide/static-rbac-authentication).
 
 1. **User Model Required Fields**: To use **Arkos** Built-in Auth System you must define a Userl model and it must contain some required fields and as stated before they differ sligthly when using Static RBAC and Dynamic RBAC, [see more](/docs/advanced-guide/implementing-built-in-auth-system#defining-the-user-model).
 2. **User Roles**: The `role` or `roles` fields in the **User** model can be a string, list of strings, enums in Static RBAC or a `UserRole` model when using Dynamic RBAC, representing a single role (e.g., `admin`) or multiple roles (e.g., `admin`, `editor`), [see more](/docs/advanced-guide/static-rbac-authentication#role-userrole).

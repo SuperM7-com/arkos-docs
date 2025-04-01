@@ -2,21 +2,6 @@ import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
-// // docusaurus.config.js
-// import lightCodeTheme from ('prism-react-renderer/themes/github');  // Light theme
-// import darkCodeTheme from ('prism-react-renderer/themes/dracula');  // Dark theme
-
-// module.exports = {
-//   themeConfig: {
-//     prism: {
-//       theme: lightCodeTheme, // Theme for light mode
-//       darkTheme: darkCodeTheme, // Theme for dark mode
-//     },
-//   },
-// };
-
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 const config: Config = {
   title: "Arkos",
   tagline: "Dinosaurs are cool",
@@ -147,6 +132,8 @@ const config: Config = {
       theme: prismThemes.oneDark,
       darkTheme: prismThemes.oneDark,
     },
+    onBrokenLinks: "ignore",
+    onBrokenMarkdownLinks: "ignore",
   } satisfies Preset.ThemeConfig,
 };
 

@@ -116,9 +116,9 @@ You should see an empty list of users, which means your API is working!
 
 ## 📖 Next Steps
 
-- [Configuration](./configuration.md) → Customize authentication, middleware, and more.
-- [Features](./features/routes.md) → Learn about AutoApi's powerful features.
-- [API Reference](./api-reference/overview.md) → Explore available endpoints.
+- [Configuration](./configuration) → Customize authentication, middleware, and more.
+- [Features](./features/routes) → Learn about AutoApi's powerful features.
+- [API Reference](./api-reference/overview) → Explore available endpoints.
 
 ---
 

@@ -164,5 +164,5 @@ export class RegisterDto {
 
 ## Next Steps
 
-- [Interceptors](./interceptors.md) - Learn about request/response modification
-- [Error Handling](./error-handling.md) - Custom error handling
+- [Interceptors](./interceptors) - Learn about request/response modification
+- [Error Handling](./error-handling) - Custom error handling

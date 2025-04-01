@@ -227,7 +227,7 @@ fetch("http://localhost:8000/api/authors", {
 
 :::tip Hints
 
-If you are familiar with `Prisma` you probably wondering why was passed `{ id: authorId }` in author field instead of `{ connect: { where: { id: authorId } } }`. The point is that Arkos will handle this for you, so when you pass a relation/scalar field with only then id Arkos will understand that you want to connect to it, for more references [see more](./handling-prisma-relations.md).
+If you are familiar with `Prisma` you probably wondering why was passed `{ id: authorId }` in author field instead of `{ connect: { where: { id: authorId } } }`. The point is that Arkos will handle this for you, so when you pass a relation/scalar field with only then id Arkos will understand that you want to connect to it, for more references [see more](./handling-prisma-relations).
 
 :::
 
@@ -235,10 +235,10 @@ If you are familiar with `Prisma` you probably wondering why was passed `{ id: a
 
 Now that you have a basic setup, you might want to:
 
-1. [Set up authentication](./setting-auth-and-roles.md)
-2. [Configure file uploads](./file-upload.md)
-3. [Add custom validation](./validation.md)
-4. [Implement interceptors](./interceptors.md)
+1. [Set up authentication](./setting-auth-and-roles)
+2. [Configure file uploads](./file-upload)
+3. [Add custom validation](./validation)
+4. [Implement interceptors](./interceptors)
 
 ## Troubleshooting
 

@@ -193,5 +193,5 @@ export const afterFindMany = catchAsync(
 
 ## Next Steps
 
-- [Error Handling](./error-handling.md) - Learn about error handling
-- [Validation](./validation.md) - Implement data validation
+- [Error Handling](./error-handling) - Learn about error handling
+- [Validation](./validation) - Implement data validation

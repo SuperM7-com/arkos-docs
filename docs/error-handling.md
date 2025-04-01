@@ -127,5 +127,5 @@ export const updateUser = catchAsync(
 
 ## Next Steps
 
-- [Validation](./validation.md) - Learn about data validation
-- [Interceptors](./interceptors.md) - Use middleware and interceptors
+- [Validation](./validation) - Learn about data validation
+- [Interceptors](./interceptors) - Use middleware and interceptors
