@@ -239,8 +239,10 @@ const products = await prisma.product.findMany({
       },
       {
         description: {
-          // Let's our Product model have description field which is String
-          // search=wireless will search the text in all string fields but id fields.
+          // Let's say our Product model have description
+          // field which is String search=wireless will
+          // search the text in all string fields but
+          // id fields.
           contains: "wireless",
           mode: "insensitive",
         },
@@ -290,7 +292,7 @@ const users = await prisma.user.findMany({
 This is `disabled` by default for securites reasons because it allows end users not make raw prisma query which can be dangeours to your application, you is it if you really now what you are doing. `We Recommend Not To Enabled This Option`.
 :::
 
-A better way to use this is trough `prisma-query-options` files that will only use this parameter on your code level for you to customize the default behavior of your prisma queries that are handled automatically by **Arkos**, you can [read more about](/docs/customizing-prisma-query-options).
+A better way to use this is trough `prisma-query-options` files that will only use this parameter on your code level for you to customize the default behavior of your prisma queries that are handled automatically by **Arkos**, you can [read more about](/docs/advanced-guide/custom-prisma-query-options).
 
 By the way, if you would like to activate the request query paramenter `prismaQueryOptions` do the following under your `src/app.ts`:
 

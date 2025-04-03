@@ -56,11 +56,11 @@ Create interceptors in your module's middleware file for the post model:
 
 ```typescript
 // src/modules/post/post.middlewares.ts
-import { Request, Response, NextFunction } from "express";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
 import { catchAsync } from "arkos/error-handler";
 
 export const beforeCreateOne = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Your logic here
 
     next();
@@ -68,7 +68,7 @@ export const beforeCreateOne = catchAsync(
 );
 
 export const afterCreateOne = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Your logic here
 
     next();
@@ -147,11 +147,11 @@ Example middleware implementation with author model:
 
 ```typescript
 // src/modules/author/author.middlewares.ts
-import { Request, Response, NextFunction } from "express";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
 import { catchAsync } from "arkos/error-handler";
 
 export const beforeCreateOne = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Add custom logic before creating a author
     console.log("Creating author:", req.body);
     // You can modify req.body here
@@ -160,7 +160,7 @@ export const beforeCreateOne = catchAsync(
 );
 
 export const afterFindMany = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Modify response data after fetching authors
     const data = req.responseData.data.map((author) => {
       // Remove sensitive data or transform response
@@ -177,11 +177,11 @@ Example middleware implementation with post model:
 
 ```typescript
 // src/modules/author/author.middlewares.ts
-import { Request, Response, NextFunction } from "express";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync, AppError } from "arkos/error-handler";
 
 export const beforeUpdateOne = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Custom logic to prevent an author to change other authors post
     if (req.user.roles.some((role) => role.name === "Author")) {
       const postToUpdate = await prisma.post.find({

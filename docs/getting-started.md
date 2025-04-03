@@ -235,10 +235,9 @@ If you are familiar with `Prisma` you probably wondering why was passed `{ id: a
 
 Now that you have a basic setup, you might want to:
 
-1. [Set up authentication](./setting-auth-and-roles)
-2. [Configure file uploads](./file-upload)
-3. [Add custom validation](./validation)
-4. [Implement interceptors](./interceptors)
+1. [Set up authentication](/docs/core-concepts/built-in-authentication-system.md)
+2. [Add custom validation](/docs/core-concepts/request-data-validation)
+3. [Implement interceptors](/docs/core-concepts/interceptor-middlewares.md)
 
 ## Troubleshooting
 

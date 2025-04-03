@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 ---
 
 import Tabs from '@theme/Tabs';
@@ -47,6 +47,6 @@ With Arkos, these common backend patterns are automatically generated based on y
 
 Arkos analyzes your Prisma schema definitions and automatically generates the appropriate routes, controllers, and services for your models while still giving you the flexibility to customize any part of the system when needed.
 
-:::tip
+:::important
 Arkos doesn't replace Express or Prisma - it enhances them by automating repetitive tasks while giving you full access to their powerful features when you need them.
 :::
