@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --ifm-color-primary: #0ea5e9; /* sky-500 */
   --ifm-color-primary-dark: #0284c7; /* sky-600 */
