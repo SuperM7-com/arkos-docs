@@ -18,7 +18,7 @@ Hence Arkos allows you to even intercept those request that are automatically ha
 On a conventional Express apps you intercept request with middlewares by adding them directly in the router, for example:
 
 ```ts
-// post.router.ts
+// src/routers/post.router.ts
 import { Router } from "express";
 import * as postController from "./post.controller.ts";
 import {
@@ -96,12 +96,42 @@ export const beforeFindMany = catchAsync(async (req, res, next) => {});
 ```
 
 :::info
-For the middlewares to work you must define them under `src/modules/model-name/model-name.middlewares.ts` and then export the middlewares as above. You understand more about the folder structure [clicking here](/docs/project-folders-structure)
+For the middlewares to work you must define them under `src/modules/model-name/model-name.middlewares.ts` and then export the middlewares as above. You understand more about the folder structure [clicking here](/docs/project-structure)
 :::
 
 :::danger
 You must pay attention on the model names so that you don't end up writing something that doesn't work. the model names on the files' name and folders' name must be in kebab-case in must be in singular. Read more about kebab-case [clicking here](https://developer.mozilla.org/en-US/docs/Glossary/Kebab_case).
 :::
+
+If you wish to pass some data from `before` to `after` while handling the request you can attach it on `req` object.
+
+#### Example
+
+```ts
+// src/modules/posts/post.middlewares.ts
+
+// src/modules/author/author.middlewares.ts
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
+import { catchAsync } from "arkos/error-handler";
+
+export const beforeCreateOne = catchAsync(
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
+    // some code
+    (req as any).someFieldToPassToAfter = someData;
+    // some code
+    next();
+  }
+);
+
+export const afterFindMany = catchAsync(
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
+    // some code
+    console.log((req as any).someFieldToPassToAfter); // will log the data
+    // some code
+    next();
+  }
+);
+```
 
 ### 3. Understanding `After` Interceptor Middlewares
 
@@ -109,9 +139,9 @@ This kind of middlewares are used to intercept any requests after the final main
 
 **1. Differences with `Before` intercepter middlwares:** As these are middlewares that runs after the request, here arkos provides ways to access the data that would be sent normally by the final operation that ran before it or will be sent if you call next() on a `After` interceptor middlewares.
 
-- **req.responseData** - Allows you to access the response data that was created/modified on the final hanlder that ran before it and would be sent if there was no `After` interceptor middleware or if you call next() on the `After` intercepter middleware.
-- **req.responseStatus** - Allows you to access the response http status code that would be sent if there was no `After` interceptor middleware or if you call next() on the `After` intercepter middleware.
-- **req.additionalData** - Here Arkos provides you a way to access some additional data that was generated on the final operation and would not go anywhere in the response, for example when using authentication and there is a `signup` Arkos may generate a email verification otp which you will be able to acess through this.
+- **`req.responseData`** - Allows you to access the response data that was created/modified on the final hanlder that ran before it and would be sent if there was no `After` interceptor middleware or if you call next() on the `After` intercepter middleware.
+- **`req.responseStatus`** - Allows you to access the response http status code that would be sent if there was no `After` interceptor middleware or if you call next() on the `After` intercepter middleware.
+- **`req.additionalData`** - Here Arkos provides you a way to access some additional data that was generated on the final operation and would not go anywhere in the response, for example when using authentication and there is a `signup` Arkos may generate a email verification otp which you will be able to acess through this.
 
 :::tip
 You don't need to worry too much about `req.additionalData` because most of the time and in most of the `After` Interceptor Middlewares it will just be null.
@@ -145,7 +175,7 @@ Notice that all kind of middlewares stays at the same file as shown above, wethe
 
 Example middleware implementation with author model:
 
-```typescript
+```ts
 // src/modules/author/author.middlewares.ts
 import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
 import { catchAsync } from "arkos/error-handler";
@@ -207,35 +237,32 @@ export const beforeUpdateOne = catchAsync(
 :::
 
 :::tip
-**AppError**: when you want to throw an error you can use the AppError class, which is highly recommend, that allows you to easy setup an error with http code and other things, [see more about AppError](/docs/error-handling#the-apperror-class).
+**AppError**: when you want to throw an error you can use the AppError class, which is highly recommend, that allows you to easy setup an error with http code and other things, [see more about AppError](/docs/api-reference/the-app-error-class).
 :::
 
 ### 3. Customizing Base Query Options
 
 Most of the time when designing your applications, you will want to customize your models base query options so that you have control over what is exposed what must not and so on, for example, hiding sensitive data like password field in all user requests or including some fields like profile as it is not included by default, by doing something like this in normal Express app:
 
-You can [read more](/docs/advanced-guide/prisma-query-parameters) advanced guide about customizing base query options.
+> You can [read more](/docs/advanced-guide/custom-prisma-query-options) advanced guide about customizing prisma query options.
 
 ```ts
-import { prisma } from "./utils/prisma";
+import { prisma } from "../../utils/prisma";
+import { catchAsync } from "arkos/error-handler";
 
-export const findOneUser = async (req, res, next) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: req.params.id,
-      },
-      include: {
-        password: false,
-        profile: true,
-      },
-    });
+export const findOneUser = catchAsync(async (req, res, next) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: req.params.id,
+    },
+    include: {
+      password: false,
+      profile: true,
+    },
+  });
 
-    res.status(200).json({ data: user });
-  } catch (err) {
-    res.status(500).json({ message: "Something Went Wrong!" });
-  }
-};
+  res.status(200).json({ data: user });
+});
 ```
 
 In **Arkos** yes you can do this just if you want, because **Arkos** was designed to make your development easy and fast mainly to avoid unecessary tasks like these ones. You can have an overview on how **Arkos** allows you to customize your base query options without the need to write any single controller or service.
@@ -257,15 +284,7 @@ const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
     include: {
       password: false,
       passwordChangedAt: false,
-      active: false,
-      phones: true,
-      roles: {
-        select: {
-          role: {
-            select: { id: true, name: true },
-          },
-        },
-      },
+      isActive: false,
     } as any,
   },
   findMany: {
@@ -293,4 +312,4 @@ export default userPrismaQueryOptions;
 Bear in mind that the model name on the file and folder names must be singular and in kebab-case, e.g: UserProfile to user-profile.
 :::
 
-This way you Arkos renforces one of it's biggest strength which is abstraction but still allowing the developer to customize basically everything he wants. For more you can [see about](/docs/advanced-guide/prisma-query-parameters) advanced usage.
+This way you Arkos renforces one of it's biggest strength which is abstraction but still allowing the developer to customize basically everything he wants. For more you can [see about](/docs/advanced-guide/custom-prisma-query-options) advanced usage.

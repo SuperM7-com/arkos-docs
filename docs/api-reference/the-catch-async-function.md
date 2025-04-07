@@ -1,5 +1,5 @@
 ---
-position: 3
+sidebar_position: 4
 ---
 
 # The `catchAsync` Function
@@ -20,7 +20,7 @@ The `catchAsync` function serves several important purposes:
 4. **Centralized Error Handling**: Works with `AppError` to create a cohesive error management system, [read more about AppError](/docs/api-reference/the-app-error-class).
 5. **Developer Experience**: Reduces boilerplate code and potential for human error
 
-As you are reading about the `catchAsync` maybe you may want to also read about the **Arkos Global Error Handler** [clicking here](/docs/core-concepts/built-in-error-handler).
+As you are reading about the `catchAsync` maybe you may want to also read about the **Arkos Global Error Handler** [clicking here](/docs/core-concepts/global-error-handler).
 
 ## Function Signature
 
@@ -55,8 +55,9 @@ Returns a new async function that:
 ### Basic Route Handler
 
 ```ts
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
-import { prisma } from "your-prisma-path";
+import { prisma } from "../../utils/prisma";
 
 // Without try-catch boilerplate
 export const getAllUsers = catchAsync(async (req, res, next) => {
@@ -75,44 +76,51 @@ As shown below you do not need a try-catch block when using catchAsync, neither 
 ### With Custom Error Throwing
 
 ```ts
-import { AppError, catchAsync } from "arkos/error-handler";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
+import { catchAsync } from "arkos/error-handler";
+import { prisma } from "../../utils/prisma";
 
-export const getUserById = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+export const getUserById = catchAsync(
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
+    const user = await prisma.user.findOne({ where: { id: req.params.id } });
 
-  if (!user) {
-    throw new AppError("User not found", 404, { userId: req.params.id });
+    if (!user) {
+      throw new AppError("User not found", 404, { userId: req.params.id });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: { user },
+    });
   }
-
-  res.status(200).json({
-    status: "success",
-    data: { user },
-  });
-});
+);
 ```
 
 ### In Middleware
 
 ```ts
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { AppError, catchAsync } from "arkos/error-handler";
 
-export const protectRoute = catchAsync(async (req, res, next) => {
-  // Get token from request headers
-  const token = req.headers.authorization?.split(" ")[1];
+export const protectRoute = catchAsync(
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
+    // Get token from request headers
+    const token = req.headers.authorization?.split(" ")[1];
 
-  if (!token) {
-    throw new AppError("Not authenticated. Please log in.", 401);
+    if (!token) {
+      throw new AppError("Not authenticated. Please log in.", 401);
+    }
+
+    // Verify token
+    const decoded = await verifyToken(token);
+
+    // Add user to request object
+    req.user = decoded;
+
+    // Continue to next middleware/handler
+    next();
   }
-
-  // Verify token
-  const decoded = await verifyToken(token);
-
-  // Add user to request object
-  req.user = decoded;
-
-  // Continue to next middleware/handler
-  next();
-});
+);
 ```
 
 :::info
@@ -141,7 +149,7 @@ When using `catchAsync`, the error handling flow works like this:
 
 ## Integration with AppError
 
-`catchAsync` works best when paired with the `AppError` class:
+`catchAsync` works best when paired with the `AppError` class, [read more](/docs/api-reference/the-app-error-class) about the `AppError` class:
 
 ```typescript
 import { AppError, catchAsync } from "arkos/error-handler";

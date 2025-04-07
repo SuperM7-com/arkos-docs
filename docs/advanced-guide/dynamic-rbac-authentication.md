@@ -1,5 +1,6 @@
 ---
-sidebar_position: 4
+sidebar_position: 3
+title: Dynamic Authentication
 ---
 
 import Tabs from '@theme/Tabs';
@@ -7,20 +8,23 @@ import TabItem from '@theme/TabItem';
 
 # `Dynamic` RBAC Authentication
 
-Arkos offers a **Static RBAC (Config-Based)** system, ideal for predefined roles and permissions where access control is managed through configuration files. It’s a simple yet flexible approach for setting up authentication and role-based access in your application.
+**Arkos** offers a **Dynamic RBAC (Database-Based)** system, ideal for applications that require flexible, runtime-configurable roles and permissions. This approach allows you to define and modify access controls directly through your database, making it perfect for larger applications where permission structures may evolve over time.
 
-### Key Concepts
+## Key Concepts
 
-- **Roles & Permissions**: Users can be assigned one or more roles (strings or enums) within the User model through the `role` field for single role or `roles` for multiple roles. Each role determines what actions the user is allowed to perform.
-- **Model-Specific Auth Config**: Each model can have its own access control and authentication configuration, allowing granular control over which actions require authentication and which roles can perform them.
+- **Database-Driven Permissions**: Unlike Static RBAC, permissions are stored in the database and can be modified at runtime without code changes.
+- **Required Models**: The system uses dedicated models (`AuthRole`, `AuthPermission`, `UserRole`) to manage roles and permissions.
+- **Resource-Action Control**: Permissions are defined as combinations of resources (models) and actions (view, create, update, delete).
+- **Model-Specific Public Routes**: You can still configure which routes are public using auth config files as Static Authentication, but role-based access is managed in the database.
 
-### How It Works
+## How It Works
 
-1. **User Model Required Fields**: To use **Arkos** Built-in Auth System (ABAS) you must define a Userl model and it must contain some required fields, [see here](/docs/advanced-guide/static-rbac-authentication#defining-the-user-model).
-2. **User Roles**: The `role` or `roles` fields in the **User** model can be a string or an enum, representing a single role (e.g., `admin`) or multiple roles (e.g., `admin`, `editor`).
-3. **Auth Config Files**: Each model can have a custom authentication configuration file. This file defines which actions require authentication and which roles can perform them.
+1. **Required Models Setup**: You must implement specific models (`AuthRole`, `AuthPermission`, `UserRole`) in your Prisma schema.
+2. **User Association**: Users are associated with roles through the `UserRole` relation model.
+3. **Permission Checks**: **Arkos** automatically checks permissions from the database when requests are made.
+4. **Public Routes**: Configure authentication requirements (public vs. authenticated) through auth config files same as Static Authentication.
 
-### Setting Up Authentication Mode To Static
+## Setting Up Authentication Mode To Dynamic
 
 ```ts
 // src/app.ts
@@ -28,19 +32,53 @@ import arkos from "arkos";
 
 arkos.init({
   authentication: {
-    mode: "static", // default behavior
+    mode: "dynamic",
   },
 });
 ```
 
-### Defining The User Model
+:::danger
+Only activate this after defining your required models and creating at least one user with `isSuperUser` set to `true`. By default, Arkos will require authentication for all endpoint routes and will only allow super users to operate unless you define public routes using auth configs.
+:::
 
-As stated before, to use the **Arkos Built-in Auth System** in Static RBAC mode you must defined a User model with some pre-defined and required fields in order for it work.
+## Required Database Models for Dynamic RBAC
+
+To implement Dynamic RBAC, you need to define the following models in your Prisma schema:
 
 ```ts
-enum UserRole { // Change to your own roles
-  admin
-  user
+model AuthRole {
+  id          String          @id @default(uuid())
+  name        String          @unique
+  permissions AuthPermission[]
+  users       UserRole[]
+}
+
+// This enum options must be in lower-case as Arkos expects
+enum AuthPermissionAction {
+  view
+  create
+  update
+  delete
+}
+
+model AuthPermission {
+  id        String               @id @default(uuid())
+  resource  String               // Database models name in kebab-case
+  action    AuthPermissionAction @default(view) // When using sqlite, this can be a plain String
+  roleId    String
+  role      AuthRole @relation(fields: [roleId], references: [id])
+
+  @@unique([resource, action, roleId])
+}
+
+model UserRole {
+  id      String    @id @default(uuid())
+  userId  String
+  user    User      @relation(fields: [userId], references: [id])
+  roleId  String
+  role    AuthRole  @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
 }
 
 model User {
@@ -48,29 +86,63 @@ model User {
   username           String    @unique
   password           String
   passwordChangedAt  DateTime?
-  lastLogin          DateTime?
+  lastLoginAt        DateTime?
   isSuperUser        Boolean   @default(false)
-  deletedSelfAccount Boolean   @default(false)
-  active             Boolean   @default(true)
-  role               UserRole  @default(user)
-  // add more user fields if needed
+  isStaff            Boolean   @default(false)
+  deletedSelfAccounAt DateTime?
+  isActive           Boolean   @default(true)
+  roles              UserRole[] // Association with roles through UserRole model
+  // other fields for your application
 }
 ```
 
-### Understanding The User Model
+:::tip
+You can add fields like `createdAt`, `updatedAt`, `updatedAt` and other fields all according to your application requirements. For fields that are not required by **Arkos** you can interact through the interceptor middlewares. see [Authentication Interceptor Middlewares](/docs/authentication-system/authentication-interceptor-middlewares) and see [General Interceptor Middlewares](/docs/core-concepts/interceptor-middlewares).
+:::
+
+### Managing Authentication For AuthRole, AuthPermission, UserRole
+
+Treat them as normal prisma models although these are used for authentication by **Arkos**, define the authentication also through database and make it private or public through auth config files (Most of the time will be private, maybe never public).
+
+### Understanding the Dynamic RBAC Models
+
+#### `AuthRole`
+
+- Represents a role that can be assigned to users
+- Contains a unique name identifier
+- Links to permissions and users through relationships
+
+#### `AuthPermission`
+
+- Defines what actions can be performed on specific resources
+- `resource`: Corresponds to your Prisma model names in kebab-case (e.g., `user`, `blog-post`)
+- `action`: Must be one of the lowercase values: `view`, `create`, `update`, `delete`
+- Special resource `file-upload` is available for file upload permission control (see [File Uploads Authentication](/docs/advanced-guide/file-uploads-authentication))
+
+#### `UserRole`
+
+- Junction table connecting users to roles (many-to-many relationship)
+- Allows a user to have multiple roles or you can change to be only one
+- Allows roles to be assigned to multiple users
+
+#### `User`
+
+- The User model remains similar to the Static RBAC version
+- Instead of having a direct `role` or `roles` field as `Enum` or `String`, it relates to roles through the `UserRole` model
+- You can also change between `roles` and `UserRole[]` to `role` and `UserRole` to use single based role
+
+## Understanding The User Model Fields
+
+The User model fields serve the same purposes as in Static RBAC:
 
 #### `id: String`
 
-- Uses UUID generation for unique user identification
-- `@id` marks it as the primary identifier
-- `@default(uuid())` automatically generates a unique identifier
-- Is up to the prisma provider use are using
+- Unique user identifier, typically a UUID
 
 #### `username: String`
 
-- Serves as the primary login identifier
-- `@unique` constraint ensures no duplicate usernames
-- Flexible design allows customization to email, phone, or other identifiers. by passing usernameField in `arkos.init()` under authentication field.
+- Primary login identifier with unique constraint
+- Can be changed to others like email and customized to work in authentication via the `usernameField` option
 
 ```ts
 // src/app.ts
@@ -78,138 +150,127 @@ import arkos from "arkos";
 
 arkos.init({
   authentication: {
-    mode: "static",
-    usernameField: "email", // If wants to use User email field for authentication
+    mode: "dynamic",
+    usernameField: "email", // Use email field for authentication
   },
 });
 ```
 
 #### `password: String`
 
-- Stores the user's authentication credential
-- Is hashed by default with bcrypt (implicit for security reasons)
-- Critical for user authentication process
+- Stores the hashed user password
 
 #### `passwordChangedAt: DateTime?`
 
-- Used to invalidated a JWT Token after user changes password
-- Useful for:
-  - Security audits
-  - Forcing password resets
-  - Tracking recent password modifications
+- Used to invalidate JWT tokens after password changes
+- Allows to prevent JWT tokens generated before not to work
+
+#### `lastLoginAt: DateTime?`
+
+- Tracks the user's most recent login time
 
 #### `isSuperUser: Boolean`
 
-- Provides a global override for access controls
-- When `true`, grants full system access regardless of role
-- Typically reserved for system administrators
-- Default is `false` for standard security
+- When `true`, grants full system access regardless of roles or permissions
+- Reserved for system administrators
 
-#### `deletedSelfAccount: Boolean`
+#### `isStaff: Boolean`
 
-- Tracks if a user has voluntarily deleted their account
-- Provides soft account deletion mechanism
-- Default is `false`
+- Indicates users who can access admin areas in your frontend
+- Does not directly affect backend permissions (just recommended)
 
-#### `active: Boolean`
+#### `deletedSelfAccounAt: DateTime?`
 
-- Determines overall account accessibility
-- When `false`, completely prevents user from performing any API actions
-- Provides an administrative disable mechanism
-- Default is `true` for normal account operation
+- Tracks if/when a user has voluntarily deleted their account
+- Supports soft deletion functionality
 
-#### `role: UserRole`
+#### `isActive: Boolean`
 
-- Defines user's permission level
-- Uses an enum for predefined role categories or can be a string
-- You can any role based on your application
-- Supports potential expansion to multiple roles.
+- Controls whether the user can access the system
+- When `false`, prevents all API actions
 
-```ts
-enum UserRole { // Change to your own roles
-  admin
-  user
-}
+## Creating Auth Configs for Dynamic RBAC
 
-model User {
-  // other user fields
-  roles               UserRole[]  @default(user)
-  // more user fields
-}
-```
-
-### Design Considerations
-
-- Flexible authentication approach
-- Comprehensive access control mechanisms
-- Built-in security features
-- Supports various authentication scenarios
-
-### Potential Enhancements
-
-- Add last login timestamp
-- Implement account lockout mechanisms
-- Create detailed audit logging
-- Support multi-factor authentication fields
-
-### Creating An Auth Config For A Post Model
+With Dynamic RBAC, auth config files serve a more limited purpose - they only control which routes require authentication (public vs. private). The role-based permissions are managed in the database.
 
 <Tabs>
 <TabItem value="ts" label="TypeScript" default>
 
-    ```ts
-    // src/modules/post/post.auth-configs.ts
+```ts
+// src/modules/post/post.auth-configs.ts
+import { AuthConfigs } from "arkos/auth";
 
-    import { AuthConfigs } from "arkos/auth";
+const postAuthConfigs: AuthConfigs = {
+  authenticationControl: {
+    view: false, // Public endpoint: no authentication required to view
+    create: true, // Authentication required to create (default behavior)
+    update: true, // Authentication required to update (default behavior)
+    delete: true, // Authentication required to delete (default behavior)
+  },
+  // accessControl is not used in dynamic mode since permissions are in the database
+};
 
-    const postAuthConfigs: AuthConfigs = {
-      authenticationControl: {
-        view: false, // Public endpoint: no authentication required to view
-        create: true, // Authenticated users can create posts (default behavior)
-      },
-      accessControl: {
-        delete: ["admin"], // Only 'admin' role can delete a post
-      },
-    };
+export default postAuthConfigs;
+```
 
-    export default postAuthConfigs;
-    ```
+</TabItem>
+<TabItem value="js" label="JavaScript">
 
-  </TabItem>
-  <TabItem value="js" label="JavaScript" >
+```js
+// src/modules/post/post.auth-configs.js
+const postAuthConfigs = {
+  authenticationControl: {
+    view: false, // Public endpoint: no authentication required to view
+    create: true, // Authentication required to create (default behavior)
+    update: true, // Authentication required to update (default behavior)
+    delete: true, // Authentication required to delete (default behavior)
+  },
+  // accessControl is not used in dynamic mode since permissions are in the database
+};
 
-    ```js
-    // src/modules/post/post.auth-configs.ts
-    const postAuthConfigs = {
-      authenticationControl: {
-        view: false, // Public endpoint: no authentication required to view
-        create: true, // Authenticated users can create posts (default behavior)
-      },
-      accessControl: {
-        delete: ["admin"], // Only 'admin' role can delete a post
-      },
-    };
+module.exports = postAuthConfigs;
+```
 
-    module.exports = postAuthConfigs;
-    ```
-
-</TabItem></Tabs>
+</TabItem>
+</Tabs>
 
 ### Explanation:
 
-- **authenticationControl**: Specifies whether authentication is required for each action. For example, the `view` action is publicly accessible (no authentication required), while `create` requires authentication (this is the default behavior).
-- **accessControl**: Defines which roles can perform specific actions. The `delete` action is restricted to users with the `admin` role. You can specify multiple roles, for example, `['admin', 'moderator']`, to grant permissions to more than one role.
+- **✅ authenticationControl**: Determines which actions require authentication. Setting an action to `false` makes it publicly accessible.
+- **❌ accessControl**: Not used in Dynamic RBAC mode as permissions are managed in the database.
 
-### Benefits:
+## Checking Available Resources
 
-- **Single and Multiple Roles**: Static RBAC can handle both single roles (e.g., just `admin`) and multiple roles (e.g., `admin`, `moderator`, `editor`), providing flexibility in access control.
-- **Simple Configuration**: No need for a complex setup—just configure the roles and permissions directly in the configuration files.
-- **Customizable Access**: Define different authentication and access rules for each model in your application.
+**Arkos** provides an endpoint to help frontend developers retrieve the list of all available resources when building permission management interfaces:
 
-### When to Use Static RBAC:
+```
+GET /api/available-resources
+```
 
-Static RBAC is perfect for applications with a well-defined set of roles that don’t change often. It’s ideal for systems where access control is based on preconfigured roles and permissions, offering simplicity and clarity in managing authentication.
+This endpoint returns a list of all resources (model names) available in your application that can be used when creating permissions. For more details, see [Checking Available Resources Guide](/docs/core-concepts/endpoints-auto-generation#checking-available-resources).
 
-### More Information
+## Benefits of Dynamic RBAC:
 
-For further details on how to setup and use RBAC in Arkos, check out the [Here](/docs/how-to-setup-and-use-static-rbac).
+- **Runtime Configuration**: Permissions can be modified without code changes or redeployment
+- **Flexible Permission Structure**: Easy to adapt to changing business requirements
+- **Centralized Management**: All permissions are stored in one place (the database)
+- **UI Integration**: Build admin interfaces to manage roles and permissions
+- **Scalability**: Well-suited for large applications with complex permission needs
+
+## When to Use Dynamic RBAC:
+
+Dynamic RBAC is ideal for:
+
+- Large applications with evolving permission requirements
+- Systems where non-developers need to manage permissions
+- Applications where new resources are frequently added
+- Multi-tenant systems with custom role configurations
+
+## Future Enhancements
+
+In upcoming releases, Arkos will support:
+
+- **Row-Level Policies**: Define permissions at the database row level (e.g., authors can only edit their own posts)
+- **Advanced Permission Rules**: Create more complex permission logic beyond basic CRUD operations
+
+Now you can start sending requests to the authentication endpoints. Read [Sending Authentication Requests Guide](/docs/authentication-system/sending-authentication-requests) to learn more.

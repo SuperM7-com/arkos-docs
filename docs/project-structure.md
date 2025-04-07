@@ -58,7 +58,7 @@ The `/src` directory contains the application logic organized into modules:
 ```
 
 :::tip
-Under the `src/modules` folder you can create model-name-in-kebab-and-singular folders in order to customize and harness **Arkos** built-in features.
+Under the `src/modules` folder you can create model-name-in-kebab folders in order to customize and harness **Arkos** built-in features.
 :::
 
 ## Special File Types

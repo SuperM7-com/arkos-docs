@@ -51,7 +51,7 @@ export default authorPrismaQueryOptions;
 ```
 
 :::danger
-Is very important to follow the file name conventions and folder structure stated above in order for this to work, you can also read more about **Arkos** overall project structure [`clicking here`](/docs/project-structure)
+Is very important to follow the file name conventions and folder structure stated above in order for this to work, you can also read more about **Arkos** overall project structure [`clicking here`](/docs/project-structure).
 :::
 
 ## Available Query Options
@@ -112,7 +112,7 @@ Options are intelligently merged at each level, with object properties being dee
 Request query parameters always take precedence over configured defaults, allowing API consumers to override your defaults when needed, as mentioned they are deep-merged rather than replaced.
 :::
 
-You can read more about how **Arkos** allows developers to handle request query parameters [clicking here](/docs/advanced-guide/request-query-parameters)
+You can read more about how **Arkos** allows developers to handle request query parameters [clicking here](/docs/request-query-parameters)
 
 ## Usage Examples
 

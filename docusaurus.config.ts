@@ -4,11 +4,11 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "Arkos",
-  tagline: "Dinosaurs are cool",
+  tagline: "The Express And Prisma Framework For RESTful API",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://your-docusaurus-site.example.com",
+  url: "https://www.arkosjs.com",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
@@ -18,7 +18,7 @@ const config: Config = {
   organizationName: "SuperM7.com", // Usually your GitHub org/user name.
   projectName: "Arkos", // Usually your repo name.
 
-  onBrokenLinks: "throw",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
   // Even if you don't use internationalization, you can use this field to set
@@ -77,7 +77,7 @@ const config: Config = {
         },
         { to: "/blog", label: "Blog", position: "left" },
         {
-          href: "https://github.com/supmer7/arkos",
+          href: "https://github.com/uanela/arkos",
           label: "GitHub",
           position: "right",
         },
@@ -121,7 +121,7 @@ const config: Config = {
             },
             {
               label: "GitHub",
-              href: "https://github.com/superm7/arkos",
+              href: "https://github.com/uanela/arkos",
             },
           ],
         },
@@ -130,7 +130,7 @@ const config: Config = {
     },
     prism: {
       theme: prismThemes.oneDark,
-      darkTheme: prismThemes.oneDark,
+      // darkTheme: prismThemes.oneDark,
     },
     onBrokenLinks: "ignore",
     onBrokenMarkdownLinks: "ignore",

@@ -42,7 +42,7 @@ The name "Arkos" comes from the Greek word "ἀρχή" (Arkhē), meaning "beginn
     // src/app.js
     const arkos = require("arkos");
 
-    arkos.init();
+    arkos.init({ port: 8000 });
     ```
 
   </TabItem>
@@ -52,7 +52,7 @@ The name "Arkos" comes from the Greek word "ἀρχή" (Arkhē), meaning "beginn
     // src/app.ts
     import arkos from "arkos";
 
-    arkos.init();
+    arkos.init({ port: 8000 });
     ```
 
   </TabItem>
@@ -60,11 +60,10 @@ The name "Arkos" comes from the Greek word "ἀρχή" (Arkhē), meaning "beginn
 
 ## Next Steps
 
-- [Getting Started](./getting-started) - Set up your first Arkos project
-- [Authentication](./setting-auth-and-roles) - Learn about auth and user roles
-- [File Upload](./file-upload) - Handle file uploads and optimization
-- [Validation](./validation) - Implement data validation
-- [Interceptors](./interceptors) - Use middleware and interceptors
+- [Getting Started](/docs/getting-started) - Set up your first Arkos project
+- [Project Structure](/docs/project-structure) - See the the **Arkos** project structure
+- [How Does It Works](/docs/how-does-arkos-works) - Learn about **Arkos** behind the scene work
+- [Core Concepts](/docs/category/core-concepts) - Catch up with arkos core
 
 ---
 

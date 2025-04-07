@@ -1,5 +1,5 @@
 ---
-position: 2
+sidebar_position: 3
 ---
 
 # The `AppError` Class
@@ -64,25 +64,30 @@ If throwing an error while processing a request you may want to wrap your async 
 
 ```typescript
 import { AppError, catchAsync } from "arkos/error-handler";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 
-export const getUserById = catchAsync(async (req, res, next) => {
-  const user = await userService.findById(req.params.id);
+export const getUserById = catchAsync(
+  async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
+    const user = await userService.findById(req.params.id);
 
-  if (!user) {
-    throw new AppError(
-      "User not found",
-      404,
-      { userId: req.params.id },
-      "USER_NOT_FOUND"
-    );
+    if (!user) {
+      throw new AppError(
+        "User not found",
+        404,
+        { userId: req.params.id },
+        "USER_NOT_FOUND"
+      );
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: { user },
+    });
   }
-
-  res.status(200).json({
-    status: "success",
-    data: { user },
-  });
-});
+);
 ```
+
+You can read more about the `catchAsync` function [here](/docs/api-reference/the-catch-async-function).
 
 ## Error Handling Workflow
 
@@ -91,9 +96,7 @@ export const getUserById = catchAsync(async (req, res, next) => {
 3. Implement a global error handler middleware that processes `AppError` instances
 4. The error handler can distinguish between operational errors (`isOperational: true`) and programming errors
 
-## Benefits
-
-### Why Use AppError?
+## Why Use AppError?
 
 1. **Consistency**: Standardizes error handling across your entire application
 2. **Readability**: Makes error causes clearer in logs and debugging
@@ -108,4 +111,4 @@ export const getUserById = catchAsync(async (req, res, next) => {
 2. **Use Proper Status Codes**: Match HTTP semantics (400 for bad requests, 404 for not found, etc.)
 3. **Include Context**: Add relevant data in the `meta` object for debugging
 4. **Consistent Codes**: Establish a system for your error codes (e.g., `RESOURCE_OPERATION_ISSUE`)
-5. **Set Operational Flag**: Only set `isOperational: true` for expected errors
+5. **Set Operational Flag**: Only set `isOperational: true` for expected errors (by default).

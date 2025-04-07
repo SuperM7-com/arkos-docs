@@ -19,14 +19,16 @@ With this said, **Arkos** allows you to choose between two types of **RBAC (Role
 
 Both **Static RBAC** and **Dynamic RBAC** are fully supported in **Arkos**. However, **the Attribute-Based Access Control (ABAC) extension within Dynamic RBAC is not yet implemented**. **Arkos** is an `open-source project and welcomes developer contributions` to bring support for ABAC integration. If you are interested in contributing, check out the [Arkos repository](https://github.com/superm7/arkos) and join the community discussions to help shape this feature.
 
-## Activating Authentication With Default Behavior
+## Activating Authentication With Static RBAC
 
 ```ts
 // src/app.ts
 import arkos from "arkos";
 
 arkos.init({
-  authentication: true,
+  authentication: {
+    mode: "static",
+  },
 });
 ```
 
@@ -36,13 +38,13 @@ Read more about to understand how the whole Arkos Built-in Auth System.
 
 ## How It Works
 
-In order to use the Built-in Auth System in **Arkos** there are some things that you must setup and those things differs slightly between the both approaches (Static RBAC and Dynamic RBAC), below you have an overview in form of key points to setup and use the Built-in Auth System. Or if you want, you can also dive directly to a full detail documentation on how to set this up in your project using the Static RBAC approach [Clicking Here](/docs/advanced-guide/static-rbac-authentication).
+In order to use the Built-in Auth System in **Arkos** there are some things that you must setup and those things differs slightly between the both approaches (Static RBAC and Dynamic RBAC), below you have an overview in form of key points to setup and use the Built-in Auth System. Or if you want, you can also dive directly to a full detail documentation on how to set this up in your project using the Static RBAC approach [clicking Here](/docs/advanced-guide/static-rbac-authentication) or about Dynamic approach [clicking here](/docs/advanced-guide/dynamic-rbac-authentication).
 
-1. **User Model Required Fields**: To use **Arkos** Built-in Auth System you must define a Userl model and it must contain some required fields and as stated before they differ sligthly when using Static RBAC and Dynamic RBAC, [see more](/docs/advanced-guide/implementing-built-in-auth-system#defining-the-user-model).
+1. **User Model Required Fields**: To use **Arkos** Built-in Auth System you must define a Userl model and it must contain some required fields and as stated before they differ sligthly when using Static RBAC and Dynamic RBAC,see more about user model for static RBAC [cliking here](/docs/advanced-guide/static-rbac-authentication#defining-the-user-model).
 2. **User Roles**: The `role` or `roles` fields in the **User** model can be a string, list of strings, enums in Static RBAC or a `UserRole` model when using Dynamic RBAC, representing a single role (e.g., `admin`) or multiple roles (e.g., `admin`, `editor`), [see more](/docs/advanced-guide/static-rbac-authentication#role-userrole).
-3. **Auth Config**: For handling the RBAC properly you must setup some auth configuration, in Static RBAC those are made through static files in your code ([see here](/docs/advanced-guide/static-rbac-authentication#using-auth-config-to-customize-endpoint-behavior)). While in Dynamic RBAC these auth configs are made in database models such as `AuthRole`, `AuthPermission` and `UserRole` which you can you will see how to setup and use them by [clicking here](/docs/advanced-guide/implementing-built-in-auth-system#models-required-for-dynamic-rbac).
+3. **Auth Config**: For handling the RBAC properly you must setup some auth configuration, in Static RBAC those are made through static files in your code ([see here](/docs/advanced-guide/static-rbac-authentication#using-auth-config-to-customize-endpoint-behavior)). While in Dynamic RBAC these auth configs are made in database models such as `AuthRole`, `AuthPermission` and `UserRole` which you can see how to setup and use them by [clicking here](/docs/advanced-guide/dynamic-rbac-authentication#models-required-for-dynamic-rbac).
 
-## Features Provided by Arkos Built-in Auth System
+## Features Provided
 
 By default, **Arkos Built-in Auth System** provides various authentication and authorization features, including:
 
@@ -87,12 +89,12 @@ Arkos Built-in Auth System provides pre-defined routes and a powerful middleware
 | `/api/auth-permissions` | CRUD       | Permissions Manipulation |
 | `/api/user-roles`       | CRUD       | User Roles Manipulation  |
 
-You can explore on how these auth route endpoints works [clicking here](/docs/advanced-guide/authentication-route-endpoints).
+You can explore on how these auth route endpoints works [clicking here](/docs/advanced-guide/dynamic-rbac-authentication).
 
 :::info
 In the beggining **Arkos** was implemenented with features like `Forgot Password`, `Reset Password`, `Email Verification` all of those was made through sending emails with otp verification code, but was later removed so that the framework could be `Less Opinionated`, and also not all applications will use email verification although the majority will, hence arkos provides `Built-in Email Service` so that developer can setup the same thing with easy.
 
-By the way you can find a code snippet where these things are implemeted using `Arkos Built-in Auth System` together with `Arkos Built-in Email Service`, if you want to use them. [`Got To Repository`](https://github.com/superm7/arkos).
+By the way you can find a code snippet where these things are implemeted using `Arkos Built-in Auth System` together with `Arkos Built-in Email Service`, if you want to use them. [`Got To Repository`](https://github.com/uanela/arkos).
 
 In future maybe it be added again or made available through some npm packages from **Arkos** because this is very helpfull feature, but it is all up to the community and remember you can one of those who can vote to it to come back by opening an issue [`Community`](https://github.com/uanela/arkos/issues).
 :::
@@ -110,7 +112,7 @@ Arkos offers a **Static RBAC (Config-Based)** system, ideal for predefined roles
 
 ### How It Works
 
-1. **User Model Required Fields**: To use **Arkos** Built-in Auth System (ABAS) you must define a Userl model and it must contain some required fields, [see more](/docs/advanced-guide/how-to-setup-and-use-static-rbac#defining-user-the-model).
+1. **User Model Required Fields**: To use **Arkos** Built-in Auth System (ABAS) you must define a Userl model and it must contain some required fields, [see more](/docs/advanced-guide/static-rbac-authentication#defining-user-the-model).
 2. **User Roles**: The `role` or `roles` fields in the **User** model can be a string or an enum, representing a single role (e.g., `admin`) or multiple roles (e.g., `admin`, `editor`).
 3. **Auth Config Files**: Each model can have a custom authentication configuration file. This file defines which actions require authentication and which roles can perform them, [see more](/docs/advanced-guide/static-rbac-authentication#creating-an-auth-config-for-a-post-model).
 
@@ -171,52 +173,7 @@ arkos.init({
 });
 ```
 
-### Example Of Dynamic RBAC Prisma Models
-
-```ts
-model AuthRole {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  permissions AuthPermission[]
-  users       UserRole[]
-}
-
-// This enum options must be in lower-case as Arkos expects
-enum AuthPermissionAction {
-  view
-  create
-  update
-  delete
-}
-
-model AuthPermission {
-  id        String               @id @default(uuid())
-  resource  String // Database models name in kebabCase
-  action    AuthPermissionAction @default(view) // When using sqlite these can be plain String
-  roles     AuthRole[]
-  @@unique([resource, action, roleId])
-}
-
-model UserRole {
-  id      String    @id @default(uuid())
-  userId  String
-  user    User      @relation(fields: [userId], references: [id])
-  roleId  String
-  role    AuthRole  @relation(fields: [roleId], references: [id])
-  @@unique([userId, roleId])
-}
-
-model User {
-  id                 String    @id @default(uuid())
-  username           String    @unique
-  password           String
-  passwordChangedAt  DateTime?
-  isSuperUser        Boolean   @default(false)
-  deletedSelfAccount Boolean   @default(false)
-  active             Boolean   @default(true)
-  roles              UserRole[] // Can be changed to role and UserRole to single role.
-}
-```
+You can explore it in depth [here](/docs/advanced-guide/dynamic-rbac-authentication).
 
 :::tip
 Bear in mind that you can change this to single role based authentication by modifying the `roles` field in user to `role` and the `UserRole[]` to `UserRole` if want to each user have a single role.

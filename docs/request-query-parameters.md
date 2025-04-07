@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 ---
 
 # Request Query Parameters
@@ -10,7 +10,7 @@ Arkos provides a sophisticated mechanism to transform URL query parameters into 
 
 ### 1. Basic Filtering Transformation
 
-```
+```bash
 GET /api/users?age=25&status=active
 ```
 
@@ -328,7 +328,7 @@ GET api/products?search=wireless&price__gte=50&price__lt=200&sort=-price&page=2&
 
 And it will produce the same query as in [8. Combining Multiple Query Features](/docs/request-query-parameters#8-combining-multiple-query-features).
 
-How this actually works? [see here](docs/api-reference/request-query-parameters-like-django).
+How this actually works? [see here](/docs/api-reference/request-query-parameters-like-django).
 
 :::info
 You can use both approaches at the same time, it will work seamlessly.

@@ -226,8 +226,7 @@ fetch("http://localhost:8000/api/authors", {
 </Tabs>
 
 :::tip Hints
-
-If you are familiar with `Prisma` you probably wondering why was passed `{ id: authorId }` in author field instead of `{ connect: { where: { id: authorId } } }`. The point is that Arkos will handle this for you, so when you pass a relation/scalar field with only then id Arkos will understand that you want to connect to it, for more references [see more](./handling-prisma-relations).
+If you are familiar with `Prisma` you probably wondering why was passed `{ id: authorId }` in author field instead of `{ connect: { where: { id: authorId } } }`. The point is that Arkos will handle this for you, so when you pass a relation/scalar field with only then id Arkos will understand that you want to connect to it, for more references [see more](/docs/advanced-guide/handling-relation-fields-in-prisma-body-requests).
 
 :::
 
@@ -235,9 +234,9 @@ If you are familiar with `Prisma` you probably wondering why was passed `{ id: a
 
 Now that you have a basic setup, you might want to:
 
-1. [Set up authentication](/docs/core-concepts/built-in-authentication-system.md)
+1. [Set up authentication](/docs/core-concepts/built-in-authentication-system)
 2. [Add custom validation](/docs/core-concepts/request-data-validation)
-3. [Implement interceptors](/docs/core-concepts/interceptor-middlewares.md)
+3. [Implement interceptors](/docs/core-concepts/interceptor-middlewares)
 
 ## Troubleshooting
 
@@ -249,7 +248,7 @@ If you encounter any issues:
 4. Make sure your TypeScript configuration is correct
 5. Check the Arkos logs for detailed error messages
 
-For more help, visit our [GitHub repository](https://github.com/yourusername/arkos) or join our community.
+For more help, visit our [GitHub repository](https://github.com/uanela/arkos) or join our community.
 
 ---
 
