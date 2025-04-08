@@ -5,21 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faBook } from "@fortawesome/free-solid-svg-icons";
 import ArkosFeatureCard from "./components/arkos-feature-card";
-import {
-  Code,
-  Shield,
-  Layers,
-  CheckSquare,
-  Database,
-  Upload,
-  GitMerge,
-  Mail,
-  FileText,
-} from "lucide-react";
+import { arkosFeatures } from "../utils/arkos-features";
 
 export default function Home() {
   return (
-    <div className="tailwind overflow-hidden px-4 max-w-[100vw]">
+    <div className="tailwind overflow-hidden max-w-[100vw]">
       <Layout
         // title="Arkos"
         description="Backend framework for simplifying API development with automatic route generation, authentication, and minimal configuration."
@@ -27,46 +17,10 @@ export default function Home() {
         {/* Hero Section */}
         <header id="tailwind" className="bg-[#020d1f] text-white tailwind">
           <div className="container mx-auto px-4 py-12">
-            {/* Navigation */}
-            {/* <nav className="flex items-center justify-between mb-16">
-            <div className="flex items-center">
-              <img src="/img/logo.svg" alt="Arkos Logo" className="h-8" />
-              <span className="ml-2 text-white font-semibold">ARKOS</span>
-              <span className="ml-2 px-2 py-0.5 text-xs bg-gray-700 rounded-md">
-                v0.1.2
-              </span>
-            </div>
-            <div className="flex items-center space-x-8">
-              <Link to="/docs" className="text-white hover:text-blue-300">
-                Docs
-              </Link>
-              <Link to="/showcase" className="text-white hover:text-blue-300">
-                Showcase
-              </Link>
-              <Link to="/blog" className="text-white hover:text-blue-300">
-                Blog
-              </Link>
-              <button className="text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-          </nav> */}
-
             {/* Hero Content */}
             <div
               id="tailwind"
-              className="max-w-6xl mx-auto text-center md:mb-32 lg:mt-32 md:mt-20 mt-10 relative"
+              className="max-w-6xl mx-auto text-center md:mb-32 lg:mt-32 md:mt-20 mt-10 relative md:min-h-[40vh] min-h-[55vh]"
             >
               <div className="absolute md:size-[500px] size-[200px] bg-sky-500 rounded-full opacity-30 blur-3xl z-0"></div>
               <div className="absolute bottom-full left-full md:size-[500px] size-[200px] bg-sky-500 rounded-full opacity-50 blur-3xl"></div>
@@ -91,7 +45,7 @@ export default function Home() {
               <div className="flex justify-center  z-10 flex-col items-center gap-2 md:flex-row">
                 <Link
                   to="/docs/intro"
-                  className="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-6 rounded-md w-[200px] md:w-[180px] flex items-center gap-2 justify-center"
+                  className="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-6 rounded-md w-[200px] md:w-[180px] flex items-center gap-2 justify-center z-10"
                 >
                   <span>Learn More</span>
                   <FontAwesomeIcon icon={faBook} className="size-[17px]" />
@@ -224,7 +178,7 @@ export default function Home() {
                 </div> */}
                 <div>
                   <img
-                    src="/img/logo-dark.svg"
+                    src="/img/arkos-js-logo-dark.svg"
                     alt="NodeJs logo"
                     className="h-16 object-contain"
                   />
@@ -340,80 +294,3 @@ export default function Home() {
     </div>
   );
 }
-
-const arkosFeatures = [
-  {
-    title: "Automatic API Generation",
-    description: "Instantly create RESTful API routes for Prisma models.",
-    icon: <Code className="md:size-24 size-20 text-sky-500" />,
-    outline: "hover:outline-sky-500/50",
-    titleHover: "group-hover:text-sky-500/80",
-    to: "/docs/core-concepts/endpoints-auto-generation",
-  },
-  {
-    title: "Built-in Authentication",
-    description: "Supports JWT-based authentication with effortless setup.",
-    icon: <Shield className="md:size-24 size-20 text-green-500" />,
-    outline: "hover:outline-green-500/50",
-    titleHover: "group-hover:text-green-500/80",
-    to: "/docs/core-concepts/built-in-authentication-system",
-  },
-  {
-    title: "Express Middlewares",
-    description:
-      "Pre-configured security, request parsing, and error handling.",
-    icon: <Layers className="md:size-24 size-20 text-yellow-500" />,
-    outline: "hover:outline-yellow-500/50",
-    titleHover: "group-hover:text-yellow-500/80",
-    to: "/docs/built-in-middlewares",
-  },
-  {
-    title: "Built-in Data Validation",
-    description: "Using class-validator and class-transformer or zod.",
-    icon: <CheckSquare className="md:size-24 size-20 text-purple-500" />,
-    outline: "hover:outline-purple-500/50",
-    titleHover: "group-hover:text-purple-500/80",
-    to: "/docs/core-concepts/request-data-validation",
-  },
-  {
-    title: "Prisma Integration",
-    description: "Seamless connection with Prisma ORM for database management.",
-    icon: <Database className="md:size-24 size-20 text-indigo-500" />,
-    outline: "hover:outline-indigo-500/50",
-    titleHover: "group-hover:text-indigo-500/80",
-    to: "/docs/advanced-guide/custom-prisma-query-options",
-  },
-  {
-    title: "File Upload & Optimization",
-    description: "Efficient image, video, docs, raw-file handling.",
-    icon: <Upload className="md:size-24 size-20 text-red-500" />,
-    outline: "hover:outline-red-500/50",
-    titleHover: "group-hover:text-red-500/80",
-    to: "/docs/core-concepts/file-uploads",
-  },
-  {
-    title: "Interceptors Middlewares",
-    description:
-      "Tailor as you want, intercept, customize your middleware flow.",
-    icon: <GitMerge className="md:size-24 size-20 text-teal-500" />,
-    outline: "hover:outline-teal-500/50",
-    titleHover: "group-hover:text-teal-500/80",
-    to: "/docs/core-concepts/interceptor-middlewares",
-  },
-  {
-    title: "Nodemailer Integration",
-    description: "Seamless nodemailer integration for sending emails.",
-    icon: <Mail className="md:size-24 size-20 text-pink-500" />,
-    outline: "hover:outline-pink-500/50",
-    titleHover: "group-hover:text-pink-500/80",
-    to: "/docs/core-concepts/sending-emails",
-  },
-  {
-    title: "Swagger API Documentation",
-    description: "Seamless generate an api documentation.",
-    icon: <FileText className="md:size-24 size-20 text-orange-500" />,
-    outline: "hover:outline-orange-500/50",
-    titleHover: "group-hover:text-orange-500/80",
-    to: "/docs/core-concepts/swagger-api-documentation",
-  },
-];

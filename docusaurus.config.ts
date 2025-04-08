@@ -6,41 +6,31 @@ const config: Config = {
   title: "Arkos.js",
   tagline: "The Express And Prisma Framework For RESTful API",
   favicon: "img/favicon.ico",
-
-  // Set the production url of your site here
   url: "https://www.arkosjs.com",
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: "/",
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
   organizationName: "SuperM7.com", // Usually your GitHub org/user name.
   projectName: "Arkos.js", // Usually your repo name.
 
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
     locales: ["en", "pt"],
   },
-  // plugins: [
-  //   async function myPlugin(context, options) {
-  //     return {
-  //       name: "docusaurus-tailwindcss",
-  //       configurePostCss(postcssOptions) {
-  //         // Appends TailwindCSS and AutoPrefixer.
-  //         postcssOptions.plugins.push(require("tailwindcss"));
-  //         postcssOptions.plugins.push(require("autoprefixer"));
-  //         return postcssOptions;
-  //       },
-  //     };
-  //   },
-  // ],
+  plugins: [
+    async function myPlugin(context, options) {
+      return {
+        name: "docusaurus-tailwindcss",
+        configurePostCss(postcssOptions) {
+          // Appends TailwindCSS and AutoPrefixer.
+          postcssOptions.plugins.push(require("tailwindcss"));
+          postcssOptions.plugins.push(require("autoprefixer"));
+          return postcssOptions;
+        },
+      };
+    },
+  ],
 
   presets: [
     [
@@ -75,20 +65,19 @@ const config: Config = {
   themeConfig: {
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      // title: "Arkos",
       logo: {
         alt: "Arkos js Logo",
-        src: "img/logo.svg",
-        srcDark: "img/logo-dark.svg",
+        src: "img/arkos-js-logo.svg",
+        srcDark: "img/arkos-js-logo-dark.svg",
       },
       items: [
         {
           type: "docSidebar",
           sidebarId: "tutorialSidebar",
-          position: "left",
+          position: "right",
           label: "Docs",
         },
-        { to: "/blog", label: "Blog", position: "left" },
+        { to: "/blog", label: "Blog", position: "right" },
         {
           href: "https://github.com/uanela/arkos",
           label: "GitHub",
@@ -112,17 +101,17 @@ const config: Config = {
           title: "Community",
           items: [
             {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
+              label: "WhatsApp",
+              href: "https://chat.whatsapp.com/EJ8cjb9hxau0EcOnI4fdpD",
             },
-            {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
-            },
-            {
-              label: "X",
-              href: "https://x.com/docusaurus",
-            },
+            // {
+            //   label: "Discord",
+            //   href: "https://discordapp.com/invite/docusaurus",
+            // },
+            // {
+            //   label: "X",
+            //   href: "https://x.com/docusaurus",
+            // },
           ],
         },
         {

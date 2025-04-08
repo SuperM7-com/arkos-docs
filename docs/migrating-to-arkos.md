@@ -4,7 +4,7 @@ sidebar_position: 14
 
 # Migrating To Arkos
 
-:::warning
+:::info
 Is possible to do, some apps from fastify and express as already been migrated to **Arkos**.
 :::
 

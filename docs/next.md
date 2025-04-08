@@ -2,9 +2,9 @@
 sidebar_position: 15
 ---
 
-# Arkos Roadmap
+# Arkos Next
 
-**Arkos** is complete and almost ready to production (even though being already being by many apps in production), but this is all up to the community feedbacks. In this guide you can find some of `ArkosNext` (just copied from `EsNext`) which are the next features that will added on the next releases
+**Arkos** is complete and almost ready to production (even though being already used by some apps in production), but this is all up to the community feedbacks. In this guide you can find some of `ArkosNext` (just copied from `EsNext`) which are the next features that will/areIntendedToBe added on the next releases:
 
 - AWS S3 Built-in File Uploads
 - Authentication With Policies (e.g. Author can only edit it's own posts without needing to write `Interceptor Middlewares`)

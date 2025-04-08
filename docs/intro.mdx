@@ -2,39 +2,43 @@
 sidebar_position: 1
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import ArkosFeaturesCardsDocs from "./components/arkos-features-card-docs";
+import { arkosFeatures } from "../src/utils/arkos-features";
 
 # Introduction to Arkos
 
-**Arkos** is a powerful, lightweight backend framework built on top of Express.js and Prisma that simplifies API development. It automates common backend tasks while providing the flexibility developers need for custom solutions.
+**Arkos** is a powerful, fast and lightweight backend framework built on top of Express.js and Prisma that simplifies RESTful API development. It automates common backend tasks while providing the flexibility developers need for custom solutions.
 
 ### Key Features
 
-- 🚀 **Automatic API Generation** – Create RESTful endpoints instantly from your Prisma models
-- 🔐 **Built-in Authentication** – JWT-based auth with role-based access control
-- ⚡ **Express Middlewares** – Pre-configured security and request handling
-- 🛡️ **Data Validation** – Support for both class-validator and Zod
-- ⬆️ **File Upload & Optimization** – Efficient handling of images, videos, and documents
-- 💠 **Prisma Integration** – Seamless database management with relation handling
-- 👨‍💻 **Interceptors** – Flexible request/response modification
-- ✉️ **Nodemailer Integration** – Built-in email functionality
-- 📄 **Swagger API Documentation** – Built-in swagger api documentation
+<!-- <ArkosFeaturesCardsDocs /> -->
+
+<div
+  id="tailwind"
+  className="tailwind grid grid-cols-1 md:grid-cols-3 md:gap-4 p-2  mx-auto max-w-3xl md:max-w-6xl z-10 gap-3"
+>
+  {arkosFeatures.map((feature) => (
+    <ArkosFeaturesCardsDocs {...feature} />
+  ))}
+</div>
 
 ### Why Arkos?
 
 Arkos eliminates repetitive setup tasks and boilerplate code, allowing developers to focus on building features rather than infrastructure. It's perfect for:
 
-- Full-Stack Applications
+- Rapid RESTful API Development
 - Enterprise Solutions
-- Rapid API Development
 - MVPs and Prototypes
+- Full-Stack Applications
+- Anything You Can Do With Express
 
 ### Origin of the Name
 
 The name "Arkos" comes from the Greek word "ἀρχή" (Arkhē), meaning "beginning" or "foundation". This reflects our goal of providing a solid foundation for backend development.
 
-## Quick Start
+## As Simples As This
 
 <Tabs>
   <TabItem value="js" label="JavaScript" >
@@ -59,13 +63,11 @@ The name "Arkos" comes from the Greek word "ἀρχή" (Arkhē), meaning "beginn
   </TabItem>
 </Tabs>
 
+Ready to build your API? Let's get started! 🚀
+
 ## Next Steps
 
 - [Getting Started](/docs/getting-started) - Set up your first Arkos project
 - [Project Structure](/docs/project-structure) - See the the **Arkos** project structure
 - [How Does It Works](/docs/how-does-arkos-works) - Learn about **Arkos** behind the scene work
 - [Core Concepts](/docs/category/core-concepts) - Catch up with arkos core
-
----
-
-Ready to build your API? Let's get started! 🚀

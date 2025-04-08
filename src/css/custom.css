@@ -2,18 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* This keeps Tailwind styles contained to elements with the "tailwind" class */
-/* @layer base {
-  .tailwind * {
-    @tailwind base;
-  }
-} */
-
 @layer components {
-  /* .tailwind * {
-    @tailwind components;
-  } */
-
   .container {
     @apply lg:mx-10;
   }
@@ -26,6 +15,20 @@
     @apply hover:no-underline;
   }
 }
+
+/* @layer base {
+  .tailwind {
+    @tailwind base;
+  }
+}
+
+
+
+@layer utilities {
+  .tailwind {
+    @tailwind utilities;
+  }
+} */
 
 /* Outline Color Classes with 40% opacity */
 .outline-sky-500 {
