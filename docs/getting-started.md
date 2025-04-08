@@ -33,7 +33,7 @@ npm init -y
   <TabItem value="js" label="JavaScript" >
 
     ```bash
-    npm install arkos express @prisma/client
+    npm install arkos
     npm install --save-dev prisma
     ```
 
@@ -41,7 +41,7 @@ npm init -y
   <TabItem value="ts" label="TypeScript" default>
 
     ```bash
-    npm install arkos express @prisma/client
+    npm install arkos
     npm install --save-dev prisma typescript @types/node @types/express
     ```
 

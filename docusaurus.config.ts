@@ -3,7 +3,7 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
-  title: "Arkos",
+  title: "Arkos.js",
   tagline: "The Express And Prisma Framework For RESTful API",
   favicon: "img/favicon.ico",
 
@@ -16,7 +16,7 @@ const config: Config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: "SuperM7.com", // Usually your GitHub org/user name.
-  projectName: "Arkos", // Usually your repo name.
+  projectName: "Arkos.js", // Usually your repo name.
 
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
@@ -75,7 +75,7 @@ const config: Config = {
   themeConfig: {
     image: "img/docusaurus-social-card.jpg",
     navbar: {
-      title: "Arkos",
+      // title: "Arkos",
       logo: {
         alt: "Arkos js Logo",
         src: "img/logo.svg",

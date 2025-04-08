@@ -19,4 +19,24 @@ module.exports = {
     require("@tailwindcss/typography"),
     // other plugins...
   ],
+  safelist: [
+    "hover:outline-sky-500/50",
+    "hover:outline-green-500/50",
+    "hover:outline-yellow-500/50",
+    "hover:outline-purple-500/50",
+    "hover:outline-indigo-500/50",
+    "hover:outline-red-500/50",
+    "hover:outline-teal-500/50",
+    "hover:outline-pink-500/50",
+    "hover:outline-orange-500/50",
+  ],
+  // safeList: [
+  //   {
+  //     pattern: /outline-(sky|green|yellow|purple|indigo|red|pink|orange)-(500)/,
+  //     variants: ["hover"],
+  //   },
+  //   {
+  //     pattern: /text-(xs|sm|base|lg|xl|2xl)/,
+  //   },
+  // ],
 };

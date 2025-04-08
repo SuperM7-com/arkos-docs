@@ -17,14 +17,52 @@
   .container {
     @apply lg:mx-10;
   }
+
+  * {
+    @apply transition-all;
+  }
+
+  a {
+    @apply hover:no-underline;
+  }
 }
 
-/* @layer utilities {
-  .tailwind * {
-    @tailwind utilities;
-  }
-} */
+/* Outline Color Classes with 40% opacity */
+.outline-sky-500 {
+  outline-color: rgba(14, 165, 233, 0.4); /* sky-500 with 40% opacity */
+}
 
+.outline-green-500 {
+  outline-color: rgba(34, 197, 94, 0.4); /* green-500 with 40% opacity */
+}
+
+.outline-yellow-500 {
+  outline-color: rgba(234, 179, 8, 0.4); /* yellow-500 with 40% opacity */
+}
+
+.outline-purple-500 {
+  outline-color: rgba(168, 85, 247, 0.4); /* purple-500 with 40% opacity */
+}
+
+.outline-indigo-500 {
+  outline-color: rgba(99, 102, 241, 0.4); /* indigo-500 with 40% opacity */
+}
+
+.outline-red-500 {
+  outline-color: rgba(239, 68, 68, 0.4); /* red-500 with 40% opacity */
+}
+
+.outline-teal-500 {
+  outline-color: rgba(20, 184, 166, 0.4); /* teal-500 with 40% opacity */
+}
+
+.outline-pink-500 {
+  outline-color: rgba(236, 72, 153, 0.4); /* pink-500 with 40% opacity */
+}
+
+.outline-orange-500 {
+  outline-color: rgba(249, 115, 22, 0.4); /* orange-500 with 40% opacity */
+}
 :root {
   --ifm-color-primary: #0ea5e9; /* sky-500 */
   --ifm-color-primary-dark: #0284c7; /* sky-600 */
@@ -46,7 +84,8 @@
   background-color: #050b1e;
 } */
 
-[data-theme="dark"] {
+[data-theme="dark"],
+[data-theme="dark"] .navbar-sidebar {
   background-color: #090e1f;
 }
 
