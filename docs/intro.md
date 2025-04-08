@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # Introduction to Arkos
 
-**Arkos** is a powerful, lightweight backend framework built on top of Express.js and Prisma that revolutionizes API development. It automates common backend tasks while providing the flexibility developers need for custom solutions.
+**Arkos** is a powerful, lightweight backend framework built on top of Express.js and Prisma that simplifies API development. It automates common backend tasks while providing the flexibility developers need for custom solutions.
 
 ### Key Features
 
@@ -19,6 +19,7 @@ import TabItem from '@theme/TabItem';
 - 💠 **Prisma Integration** – Seamless database management with relation handling
 - 👨‍💻 **Interceptors** – Flexible request/response modification
 - ✉️ **Nodemailer Integration** – Built-in email functionality
+- 📄 **Swagger API Documentation** – Built-in swagger api documentation
 
 ### Why Arkos?
 

@@ -1,23 +1,21 @@
 import React from "react";
-import clsx from "clsx";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
-import HomepageFeatures from "@site/src/components/HomepageFeatures";
-import Heading from "@theme/Heading";
-
-import styles from "./index.module.css";
 
 export default function Home() {
   return (
-    <Layout
-      title="Arkos - The Foundational Layer For Express and Prisma"
-      description="Backend framework for simplifying API development with automatic route generation, authentication, and minimal configuration."
-    >
-      {/* Hero Section */}
-      <header className="bg-[#020d1f] text-white">
-        <div className="container mx-auto px-4 py-12">
-          {/* Navigation */}
-          <nav className="flex items-center justify-between mb-16">
+    <div className="tailwind">
+      <Layout
+        id="tailwind"
+        className="tailwind"
+        title="Arkos - The Foundational Layer For Express and Prisma"
+        description="Backend framework for simplifying API development with automatic route generation, authentication, and minimal configuration."
+      >
+        {/* Hero Section */}
+        <header id="tailwind" className="bg-[#020d1f] text-white tailwind">
+          <div className="container mx-auto px-4 py-12">
+            {/* Navigation */}
+            {/* <nav className="flex items-center justify-between mb-16">
             <div className="flex items-center">
               <img src="/img/logo.svg" alt="Arkos Logo" className="h-8" />
               <span className="ml-2 text-white font-semibold">ARKOS</span>
@@ -50,41 +48,46 @@ export default function Home() {
                 </svg>
               </button>
             </div>
-          </nav>
+          </nav> */}
 
-          {/* Hero Content */}
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <h1 className="text-5xl font-bold mb-8">
-              The Foundational Layer For Express and Prisma
-            </h1>
-            <p className="text-lg mb-8">
-              Backend framework used to{" "}
-              <span className="text-blue-400">simplify API development</span> by
-              providing automatic route generation, built-in authentication,
-              error handling, auto-api docs and file upload optimization.
-              Allowing developers to quickly set up a{" "}
-              <span className="text-blue-400">secure and scalable</span> server
-              with <span className="text-blue-400">minimal configuration</span>.
-            </p>
-            <div className="flex justify-center space-x-4">
-              <Link
-                to="/docs/get-started"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md"
+            {/* Hero Content */}
+            <div
+              id="tailwind"
+              className="max-w-6xl mx-auto text-center md:mb-16 lg:mt-32 md:mt-20 mt-10"
+            >
+              <div
+                id="tailwind"
+                className="bg-white  text-zinc-900 py-1 px-4 rounded-full w-fit mx-auto text-center mb-2 text-xs font-bold "
               >
-                Learn more
-              </Link>
-              <Link
-                to="https://github.com/your-repo/arkos"
-                className="bg-gray-700 hover:bg-gray-800 text-white font-medium py-2 px-6 rounded-md"
-              >
-                GitHub
-              </Link>
+                BETA VERSION
+              </div>
+              <h1 className="lg:text-7xl md:text-5xl text-3xl font-bold mb-8">
+                The Express & Prisma Framework For RESTful API
+              </h1>
+              <p className="mb-8 text-base md:text-lg">
+                Used to simplify the development of a secure and scalable
+                RESTful API with minimal configuration, allowing developers to
+                focus on what matters.
+              </p>
+              <div className="flex justify-center space-x-4">
+                <Link
+                  to="/docs/getting-started"
+                  className="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-6 rounded-md w-[140px]"
+                >
+                  Learn more
+                </Link>
+                <Link
+                  to="https://github.com/uanela/arkos"
+                  className="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-6 rounded-md w-[140px] "
+                >
+                  GitHub
+                </Link>
+              </div>
             </div>
-          </div>
 
-          {/* Installation Command */}
-          <div className="max-w-xl mx-auto mb-16">
-            <div className="bg-gray-800 rounded-md px-4 py-2 flex items-center">
+            {/* Installation Command */}
+            {/* <div className="max-w-xl mx-auto mb-16"> */}
+            {/* <div className="bg-gray-800 rounded-md px-4 py-2 flex items-center">
               <code className="text-gray-300 flex-grow">
                 $ npx create-arkos-api
               </code>
@@ -102,7 +105,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Code Example */}
           <div className="max-w-2xl mx-auto mb-16">
             <div className="bg-gray-800 rounded-md p-6">
               <pre className="text-gray-300">
@@ -119,7 +121,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Creator Section */}
           <div className="flex flex-col items-center justify-center mb-16">
             <div className="w-16 h-16 rounded-full overflow-hidden mb-2">
               <img
@@ -130,117 +131,125 @@ export default function Home() {
             </div>
             <h3 className="text-lg font-semibold">UANELA COMO</h3>
             <p className="text-sm text-gray-400">The creator</p>
+          </div> */}
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Features Section */}
-      <section className="bg-[#020d1f] text-white py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8">
-            What's in Arkos?{" "}
-            <span className="text-gray-400 text-xl font-normal">
+        {/* Features Section */}
+        <section
+          id="tailwind"
+          className="bg-[#020d1f] text-white py-16 tailwind"
+        >
+          <div className="container mx-auto px-4">
+            <h2 className="md:text-3xl text-xl font-bold mb-8">
+              What Arkos Do?{" "}
+              {/* <span className="text-gray-400 text-xl font-normal">
               API development that provide an automatic route generation
-            </span>
-          </h2>
+            </span> */}
+            </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                Automatic API Generation
-              </h3>
-              <p className="text-gray-400">
-                Instantly create RESTful API routes for Prisma models.
-              </p>
-            </div>
+            <div
+              id="tailwind"
+              className="tailwind grid grid-cols-1 md:grid-cols-3 gap-6 "
+            >
+              {/* Feature 1 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Automatic API Generation
+                </h3>
+                <p className="text-gray-400">
+                  Instantly create RESTful API routes for Prisma models.
+                </p>
+              </div>
 
-            {/* Feature 2 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                Built-in Authentication
-              </h3>
-              <p className="text-gray-400">
-                Supports JWT-based authentication with effortless setup.
-              </p>
-            </div>
+              {/* Feature 2 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Built-in Authentication
+                </h3>
+                <p className="text-gray-400">
+                  Supports JWT-based authentication with effortless setup.
+                </p>
+              </div>
 
-            {/* Feature 3 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                Express Middlewares
-              </h3>
-              <p className="text-gray-400">
-                Pre-configured security, request parsing, and error handling.
-              </p>
-            </div>
+              {/* Feature 3 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Express Middlewares
+                </h3>
+                <p className="text-gray-400">
+                  Pre-configured security, request parsing, and error handling.
+                </p>
+              </div>
 
-            {/* Feature 4 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                Built-in Data Validation
-              </h3>
-              <p className="text-gray-400">
-                Using class-validator and class-transformer or zod. Just drop a
-                create-post.dto.ts or create-user.schema.ts.
-              </p>
-            </div>
+              {/* Feature 4 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Built-in Data Validation
+                </h3>
+                <p className="text-gray-400">
+                  Using class-validator and class-transformer or zod. Just drop
+                  a create-post.dto.ts or create-user.schema.ts.
+                </p>
+              </div>
 
-            {/* Feature 5 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">Prisma Integration</h3>
-              <p className="text-gray-400">
-                Seamless connection with Prisma ORM for database management with
-                relation fields handling.
-              </p>
-            </div>
+              {/* Feature 5 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Prisma Integration
+                </h3>
+                <p className="text-gray-400">
+                  Seamless connection with Prisma ORM for database management
+                  with relation fields handling.
+                </p>
+              </div>
 
-            {/* Feature 6 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                File Upload & Optimization
-              </h3>
-              <p className="text-gray-400">
-                Efficient image, video, docs, raw-file handling.
-              </p>
-            </div>
+              {/* Feature 6 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  File Upload & Optimization
+                </h3>
+                <p className="text-gray-400">
+                  Efficient image, video, docs, raw-file handling.
+                </p>
+              </div>
 
-            {/* Feature 7 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                Interceptors Middlewares
-              </h3>
-              <p className="text-gray-400">
-                Tailor as you want, intercept, customize, for example using
-                beforeCreateOne, afterSignUp.
-              </p>
-            </div>
+              {/* Feature 7 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Interceptors Middlewares
+                </h3>
+                <p className="text-gray-400">
+                  Tailor as you want, intercept, customize, for example using
+                  beforeCreateOne, afterSignUp.
+                </p>
+              </div>
 
-            {/* Feature 8 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                Nodemailer Integration
-              </h3>
-              <p className="text-gray-400">
-                Seamless nodemailer integration for sending emails.
-              </p>
-            </div>
+              {/* Feature 8 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Nodemailer Integration
+                </h3>
+                <p className="text-gray-400">
+                  Seamless nodemailer integration for sending emails.
+                </p>
+              </div>
 
-            {/* Feature 9 */}
-            <div className="border border-gray-700 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-4">
-                File Upload & Optimization
-              </h3>
-              <p className="text-gray-400">
-                Efficient image, video, docs, raw-file handling.
-              </p>
+              {/* Feature 9 */}
+              <div className="border border-gray-700 rounded-lg p-6 bg-gray-900">
+                <h3 className="text-xl font-semibold mb-4 text-sky-500">
+                  Swagger API Documentation
+                </h3>
+                <p className="text-gray-400">
+                  Seamless generate an api documentation.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Engines Section */}
-      <section className="bg-[#041633] text-white py-16">
+        {/* Engines Section */}
+        {/* <section className="bg-[#041633] text-white py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-12">Trusted Developers In</h2>
 
@@ -283,12 +292,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer *
       <footer className="bg-[#020d1f] text-gray-400 py-8">
         <div className="container mx-auto px-4 text-center">
           <p>© 2025 Arkos Framework. All rights reserved.</p>
         </div>
-      </footer>
-    </Layout>
+      </footer> */}
+      </Layout>
+    </div>
   );
 }

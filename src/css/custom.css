@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* This keeps Tailwind styles contained to elements with the "tailwind" class */
+/* @layer base {
+  .tailwind * {
+    @tailwind base;
+  }
+} */
+
+@layer components {
+  /* .tailwind * {
+    @tailwind components;
+  } */
+
+  .container {
+    @apply lg:mx-10;
+  }
+}
+
+/* @layer utilities {
+  .tailwind * {
+    @tailwind utilities;
+  }
+} */
+
 :root {
   --ifm-color-primary: #0ea5e9; /* sky-500 */
   --ifm-color-primary-dark: #0284c7; /* sky-600 */
@@ -42,6 +65,11 @@
     248,
     0.3
   ); /* sky-400 with opacity */
+}
+
+/* Change navbar background */
+.footer {
+  background-color: #0f1732; /* Your custom color */
 }
 
 /* Change navbar background */

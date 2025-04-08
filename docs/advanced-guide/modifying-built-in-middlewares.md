@@ -18,7 +18,7 @@ arkos.init({
     // Middleware configuration options
     disable: [], // Array of middlewares to disable
     replace: {}, // Object of middlewares to replace
-    additionals: [], // Array of additional middlewares to add
+    additional: [], // Array of additional middlewares to add
   },
   // other configs
 });
@@ -120,7 +120,7 @@ import xss from "xss-clean";
 
 arkos.init({
   middlewares: {
-    additionals: [
+    additional: [
       helmet(), // Add security headers
       xss(), // Prevent XSS attacks
       (req, res, next) => {

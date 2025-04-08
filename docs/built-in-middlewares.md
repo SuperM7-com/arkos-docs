@@ -59,7 +59,7 @@ Configures Cross-Origin Resource Sharing policy for your API.
 
 **Configuration Options:**
 
-- Set allowed origins via `arkosConfig.cors.allowedOrigins` (array, string, or "all")
+- Set allowed origins via `arkosConfig.cors.allowedOrigins` (array, string, or "\*")
 - Provide custom options via `arkosConfig.cors.options`
 - Replace entire handler with `arkosConfig.cors.customHandler`
 
@@ -176,7 +176,7 @@ import arkos from "arkos";
 
 arkos.init({
   middlewares: {
-    additionals: [myCustomMiddleware, anotherMiddleware],
+    additional: [myCustomMiddleware, anotherMiddleware],
   },
   // other configs
 });
@@ -188,10 +188,10 @@ This will not override the built-in middlewares because they will be placed righ
 
 ### Where Custom Middlewares Are Placed
 
-Bear in mind that these stack of middlewares will be passed right after all built-in middlewares mentioned above. If you want to put custom middlewares before all **Arkos** built-in configurations pass a function to `configureApp` under configs to have acess to express app before any **Arkos** configurations, see the [Acessing The Express App Guide](/docs/acessing-the-express-app).
+Bear in mind that these stack of middlewares will be passed right after all built-in middlewares mentioned above. If you want to put custom middlewares before all **Arkos** built-in configurations pass a function to `configureApp` under configs to have acess to express app before any **Arkos** configurations, see the [Acessing The Express App Guide](/docs/accessing-the-express-app).
 
 ## Next Steps:
 
 - [Replacing Or Disabling Built-in Middlewares](/docs/advanced-guide/modifying-built-in-middlewares)
 - [Built-in Routers](/docs/api-reference/built-in-routers)
-- [Acessing The Express App](/docs/acessing-the-express-app)
+- [Acessing The Express App](/docs/accessing-the-express-app)
