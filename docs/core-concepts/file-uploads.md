@@ -111,7 +111,7 @@ arkos.init({
     baseRoute: "/api/files",
 
     // Customize upload restrictions
-    uploadRestrictions: {
+    restrictions: {
       images: {
         maxCount: 50,
         maxSize: 1024 * 1024 * 20, // 20MB

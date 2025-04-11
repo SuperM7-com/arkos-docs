@@ -95,7 +95,7 @@ You can customize image upload settings in your Arkos initialization:
 ```javascript
 arkos.init({
   fileUpload: {
-    uploadRestrictions: {
+    restrictions: {
       images: {
         maxCount: 50, // Maximum number of images per upload request
         maxSize: 1024 * 1024 * 20, // 20MB maximum file size

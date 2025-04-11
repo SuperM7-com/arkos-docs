@@ -306,7 +306,7 @@ arkos.init({
   fileUpload: {
     baseUploadDir: "./uploads", // Base directory for uploads
     baseRoute: "/api/uploads", // Base URL route for accessing files
-    uploadRestrictions: {
+    restrictions: {
       images: {
         maxCount: 50, // Maximum images per upload
         maxSize: 1024 * 1024 * 20, // 20 MB

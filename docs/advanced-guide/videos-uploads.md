@@ -59,7 +59,7 @@ You can customize video upload settings in your Arkos initialization:
 // src/app.ts
 arkos.init({
   fileUpload: {
-    uploadRestrictions: {
+    restrictions: {
       videos: {
         maxCount: 5, // Maximum number of videos per upload
         maxSize: 1024 * 1024 * 1024 * 2, // 2GB maximum file size

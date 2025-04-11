@@ -55,7 +55,7 @@ You can override the default file upload settings by using the `arkos.init()` me
 ```javascript
 arkos.init({
   fileUpload: {
-    uploadRestrictions: {
+    restrictions: {
       images: {
         maxCount: 50,
         maxSize: 1024 * 1024 * 20, // 20 MB

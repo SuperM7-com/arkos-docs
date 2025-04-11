@@ -54,7 +54,7 @@ You can customize general file upload settings in your Arkos initialization:
 // src/app.ts
 arkos.init({
   fileUpload: {
-    uploadRestrictions: {
+    restrictions: {
       files: {
         maxCount: 10, // Maximum number of files per upload
         maxSize: 1024 * 1024 * 200, // 200MB maximum file size
