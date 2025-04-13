@@ -140,6 +140,7 @@ const config: Config = {
       apiKey: process.env.ALGOLIA_SEARCH_API_KEY,
 
       indexName: "crawler_arkos_docsArkos.js Official Documentation",
+      // indexName: "test_dev",
 
       // Optional: see doc section below
       contextualSearch: true,
@@ -147,19 +148,19 @@ const config: Config = {
       // // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
       // externalUrlRegex: "npmjs\\.com|arkosjs\\.com",
 
-      replaceSearchResultPathname: {
-        from: "/docs/", // or as RegExp: /\/docs\//
-        to: "/",
-      },
+      // replaceSearchResultPathname: {
+      //   from: "/docs/", // or as RegExp: /\/docs\//
+      //   to: "/",
+      // },
 
       // Optional: Algolia search parameters
-      searchParameters: {},
+      // searchParameters: {},
 
-      // Optional: path for search page that enabled by default (`false` to disable it)
-      searchPagePath: "search",
+      // // Optional: path for search page that enabled by default (`false` to disable it)
+      // searchPagePath: "search",
 
-      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-      insights: false,
+      // // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      // insights: false,
 
       //... other Algolia params
     },

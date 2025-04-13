@@ -28,8 +28,9 @@ jobs:
               git pull origin main --force
               pnpm install
               pnpm run build
+              docker run -it --env-file=.env -e "CONFIG=$(cat /home/***/apps/nodejs/arkosjs.com/config.json | jq -r tostring)" algolia/docsearch-scraper
               pm2 restart arkosjs.com
-            sudo service nginx restart arkosjs.com.conf
+              sudo service nginx restart arkosjs.com.conf
 
                
             "
