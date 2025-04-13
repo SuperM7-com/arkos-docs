@@ -160,8 +160,6 @@ const config: Config = {
 
       // // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
       // insights: false,
-
-      //... other Algolia params
     },
     prism: {
       theme: prismThemes.oneDark,
