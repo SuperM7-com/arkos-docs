@@ -1,6 +1,9 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 const config: Config = {
   title: "Arkos.js",
@@ -61,7 +64,6 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
-
   themeConfig: {
     image: "img/docusaurus-social-card.jpg",
     navbar: {
@@ -129,6 +131,37 @@ const config: Config = {
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} SuperM7.com, Lda.`,
+    },
+    algolia: {
+      // The application ID provided by Algolia
+      appId: process.env.ALGOLIA_APP_ID,
+
+      // Public API key: it is safe to commit it
+      apiKey: process.env.ALGOLIA_SEARCH_API_KEY,
+
+      indexName: "crawler_arkos_docsArkos.js Official Documentation",
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+      // externalUrlRegex: "npmjs\\.com|arkosjs\\.com",
+
+      replaceSearchResultPathname: {
+        from: "/docs/", // or as RegExp: /\/docs\//
+        to: "/",
+      },
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: "search",
+
+      // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
+      insights: false,
+
+      //... other Algolia params
     },
     prism: {
       theme: prismThemes.oneDark,

@@ -17,9 +17,41 @@ With this said, **Arkos** allows you to choose between two types of **RBAC (Role
 
 2. **Dynamic RBAC (Database-Level)**: This approach stores roles and permissions in the database, allowing dynamic updates at runtime. Roles can be assigned or changed as needed, enabling greater flexibility. This method is commonly used in large-scale applications where access control needs to evolve dynamically. In some implementations, Dynamic RBAC can be extended with **Attribute-Based Access Control (ABAC)**, where roles and permissions are influenced by user attributes, conditions, or context.
 
-Both **Static RBAC** and **Dynamic RBAC** are fully supported in **Arkos**. However, **the Attribute-Based Access Control (ABAC) extension within Dynamic RBAC is not yet implemented**. **Arkos** is an `open-source project and welcomes developer contributions` to bring support for ABAC integration. If you are interested in contributing, check out the [Arkos repository](https://github.com/superm7/arkos) and join the community discussions to help shape this feature.
+Both **Static RBAC** and **Dynamic RBAC** are fully supported in **Arkos**. However, **the Attribute-Based Access Control (ABAC) extension within Dynamic RBAC is not yet implemented**. **Arkos** is an `open-source project and welcomes developer contributions` to bring support for ABAC integration. If you are interested in contributing, check out the [Arkos repository](https://github.com/uanela/arkos) and join the community discussions to help shape this feature.
 
 ## Activating Authentication With Static RBAC
+
+```ts
+// src/app.ts
+import arkos from "arkos";
+
+arkos.init({
+  authentication: {
+    mode: "dynamic",
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN,
+      cookie: {
+        secure: process.env.JWT_COOKIE_SECURE === "true",
+        httpOnly: process.env.JWT_COOKIE_HTTP_ONLY !== "false",
+        sameSite:
+          (process.env.JWT_COOKIE_SAME_SITE as "lax" | "strict" | "none") ||
+          undefined,
+      },
+    },
+  },
+});
+```
+
+:::tip
+You can pass those values directly but is a best practice to pass them through env variables you can even just define them in your env variables and Arkos will pickup.
+:::
+
+:::warning
+Read more about to understand how the whole Arkos Built-in Auth System.
+:::
+
+## Using Env Variables Instead
 
 ```ts
 // src/app.ts
@@ -32,9 +64,13 @@ arkos.init({
 });
 ```
 
-:::tip
-Read more about to understand how the whole Arkos Built-in Auth System.
-:::
+```env
+JWT_SECRET=my-jwt-secret
+JWT_EXPIRES_IN=30d
+JWT_COOKIE_SECURE=true
+JWT_COOKIE_HTTP_ONLY=true
+JWT_COOKIE_SAME_SITE=none
+```
 
 ## How It Works
 
@@ -124,10 +160,25 @@ import arkos from "arkos";
 
 arkos.init({
   authentication: {
-    mode: "static", // default behavior
+    mode: "dynamic",
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN,
+      cookie: {
+        secure: process.env.JWT_COOKIE_SECURE === "true",
+        httpOnly: process.env.JWT_COOKIE_HTTP_ONLY !== "false",
+        sameSite:
+          (process.env.JWT_COOKIE_SAME_SITE as "lax" | "strict" | "none") ||
+          undefined,
+      },
+    },
   },
 });
 ```
+
+:::tip
+Remember to pass jwt options or defined them on your env variables
+:::
 
 ### When to Use Static RBAC:
 
@@ -169,9 +220,24 @@ import arkos from "arkos";
 arkos.init({
   authentication: {
     mode: "dynamic",
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN,
+      cookie: {
+        secure: process.env.JWT_COOKIE_SECURE === "true",
+        httpOnly: process.env.JWT_COOKIE_HTTP_ONLY !== "false",
+        sameSite:
+          (process.env.JWT_COOKIE_SAME_SITE as "lax" | "strict" | "none") ||
+          undefined,
+      },
+    },
   },
 });
 ```
+
+:::tip
+Remember to pass jwt options or defined them on your env variables
+:::
 
 You can explore it in depth [here](/docs/advanced-guide/dynamic-rbac-authentication).
 
@@ -186,3 +252,32 @@ Bear in mind that you can change this to single role based authentication by mod
 - **Checking access at runtime**: The system checks user roles and permissions dynamically when evaluating access requests.
 
 This approach provides a more scalable and maintainable solution compared to static RBAC, ensuring that access control remains flexible as the system evolves.
+
+## Using The `authService` Object
+
+While Arkos's authentication system works automatically behind the scenes, you may sometimes need to access its methods directly. The `authService` object provides authentication-related functionality including JWT token management, password handling, and user verification.
+
+The `authService` lets you:
+
+- Manage JWT tokens (sign, verify)
+- Handle password operations (hash, verify)
+- Check password strength
+- Verify user authentication
+- Track password changes
+
+For example, you might use it to manually validate a user's password:
+
+```ts
+const isValid = await authService.isCorrectPassword(
+  inputPassword,
+  user.password
+);
+```
+
+Or to generate a custom JWT token:
+
+```ts
+const token = authService.signJwtToken(userId, "24h");
+```
+
+For a complete reference about the `authService`, of all available methods and their parameters, see the [Auth Service Object API Reference](/docs/api-reference/auth-service-object).

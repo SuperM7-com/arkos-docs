@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 title: Static Authentication
 ---
 
@@ -29,13 +29,61 @@ import arkos from "arkos";
 
 arkos.init({
   authentication: {
-    mode: "static", // default behavior
+    mode: "dynamic",
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expiresIn: process.env.JWT_EXPIRES_IN,
+      cookie: {
+        secure: process.env.JWT_COOKIE_SECURE === "true",
+        httpOnly: process.env.JWT_COOKIE_HTTP_ONLY !== "false",
+        sameSite:
+          (process.env.JWT_COOKIE_SAME_SITE as "lax" | "strict" | "none") ||
+          undefined,
+      },
+    },
   },
 });
 ```
 
+:::tip
+You can pass these values directly in your configuration, but it's a best practice to use environment variables. Arkos will automatically pick up the environment variables even without explicit configuration.
+:::
+
+### JWT Configuration Options
+
+You can pass these options in your configuration (they override environment variables if both are set):
+
+| Option            | Description                                                      | Env Variable           | Default                          |
+| ----------------- | ---------------------------------------------------------------- | ---------------------- | -------------------------------- |
+| `secret`          | The key used to sign and verify JWT tokens. **Required in prod** | `JWT_SECRET`           | —                                |
+| `expiresIn`       | How long the JWT token stays valid (e.g., `'30d'`, `'1h'`)       | `JWT_EXPIRES_IN`       | `'30d'`                          |
+| `cookie.secure`   | If `true`, the cookie is only sent over HTTPS                    | `JWT_COOKIE_SECURE`    | `true` in production             |
+| `cookie.httpOnly` | If `true`, prevents JavaScript access to the cookie              | `JWT_COOKIE_HTTP_ONLY` | `true`                           |
+| `cookie.sameSite` | Controls the SameSite attribute of the cookie                    | `JWT_COOKIE_SAME_SITE` | `"lax"` in dev, `"none"` in prod |
+
+## Using Env Variables Instead
+
+```ts
+// src/app.ts
+import arkos from "arkos";
+
+arkos.init({
+  authentication: {
+    mode: "dynamic",
+  },
+});
+```
+
+```env
+JWT_SECRET=my-jwt-secret
+JWT_EXPIRES_IN=30d
+JWT_COOKIE_SECURE=true
+JWT_COOKIE_HTTP_ONLY=true
+JWT_COOKIE_SAME_SITE=none
+```
+
 :::danger
-Only activate this after defining your user model and at least create one user with `isSuperUser` set to `true`, because **Arkos** by default will required authentication for all endpoints routes and only allowing super users to operate unless you define it using auth configs mentioned above.
+Only activate authentication after defining your user model and at least create one user with `isSuperUser` set to `true`, because **Arkos** by default will required authentication for all endpoints routes and only allowing super users to operate unless you define it using auth configs mentioned above.
 :::
 
 ### Defining The User Model For Static Authentication
@@ -88,6 +136,7 @@ arkos.init({
     usernameField: "email", // If wants to use User email field for
     // authentication or even on the fly by passing ?usernameField=phone
     // for example when POST /api/auth/login
+    // other configs
   },
 });
 ```

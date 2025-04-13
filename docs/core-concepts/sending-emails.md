@@ -72,7 +72,7 @@ The email configuration in **Arkos** allows you to set up email functionality th
 
 - The display name that appears alongside your email address
 - Optional parameter
-- Example: If set to "Your App Team", emails will appear from "Your App Team <user@example.com>"
+- Example: If set to "Your App Team", emails will appear from "Your App Team \<user@example.com\>"
 
 This configuration enables the built-in email service in **Arkos** for sending emails from your application.
 
