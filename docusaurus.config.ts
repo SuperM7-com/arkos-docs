@@ -13,7 +13,6 @@ const config: Config = {
   baseUrl: "/",
   organizationName: "SuperM7.com", // Usually your GitHub org/user name.
   projectName: "Arkos.js", // Usually your repo name.
-
   onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
@@ -139,7 +138,7 @@ const config: Config = {
       // Public API key: it is safe to commit it
       apiKey: process.env.ALGOLIA_SEARCH_API_KEY,
 
-      indexName: "crawler_arkos_docsArkos.js Official Documentation",
+      indexName: process.env.ALGOLIA_INDEX_NAME,
       // indexName: "test_dev",
 
       // Optional: see doc section below
