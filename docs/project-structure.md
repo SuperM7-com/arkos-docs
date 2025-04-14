@@ -112,7 +112,7 @@ Configure reusable Prisma query parameters.
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
 
-export const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
+const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
   findOne: {
     include: {
       profile: true,
@@ -123,6 +123,8 @@ export const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
     },
   },
 };
+
+export default userPrismaQueryOptions;
 ```
 
 ### Data Transfer Objects (dtos/\*.dto.ts)
@@ -131,7 +133,7 @@ Define data validation using class-validator for input processing.
 
 ```typescript
 // src/modules/post/dtos/create-post.dto.ts
-export class CreatePostDto {
+export default class CreatePostDto {
   // Your fields here
 }
 ```
@@ -144,9 +146,11 @@ Define validation rules using Zod for request data.
 // src/modules/post/schemas/create-post.schema.ts
 import { z } from "zod";
 
-export const CreatePostSchema = z.object({
+const CreatePostSchema = z.object({
   // Your fields here
 });
+
+export default CreatePostSchema;
 ```
 
 ## Uploads Directory

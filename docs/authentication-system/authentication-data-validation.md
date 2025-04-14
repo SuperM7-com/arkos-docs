@@ -23,7 +23,7 @@ Each of these endpoints requires proper data validation to ensure valid input da
 Authentication validation files are organized by mutation type and stored in either the DTOs or schemas directory depending on your chosen validation strategy:
 
 ```
-src/modules/auth/utils/
+src/modules/auth/
 ├── dtos/                    # For class-validator approach
 │   ├── login.dto.ts
 │   ├── signup.dto.ts
@@ -48,7 +48,7 @@ If you're using class-validator for validation (the default), you'll define DTOs
 // src/modules/auth/dtos/login.dto.ts
 import { IsString, IsNotEmpty } from "class-validator";
 
-export class LoginDto {
+export default class LoginDto {
   @IsString()
   @IsNotEmpty()
   username: string; // Or email based on usernameField config
@@ -65,7 +65,7 @@ export class LoginDto {
 // src/modules/auth/dtos/signup.dto.ts
 import { IsString, IsEmail, MinLength, Matches } from "class-validator";
 
-export class SignupDto {
+export default class SignupDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -95,7 +95,7 @@ This SignupDto is just an mere example, because these data will basically be sto
 // src/modules/auth/dtos/update-password.dto.ts
 import { IsString, MinLength, Matches } from "class-validator";
 
-export class UpdatePasswordDto {
+export default class UpdatePasswordDto {
   @IsString()
   currentPassword: string;
 
@@ -115,7 +115,7 @@ export class UpdatePasswordDto {
 // src/modules/auth/dtos/update-me.dto.ts
 import { IsString, IsEmail, IsOptional } from "class-validator";
 
-export class UpdateMeDto {
+export default class UpdateMeDto {
   @IsString()
   @IsOptional()
   name?: string;
@@ -142,10 +142,12 @@ If you prefer using Zod for validation, configure your `arkos.init()` with `{ va
 // src/modules/auth/schemas/login.schema.ts
 import { z } from "zod";
 
-export const LoginSchema = z.object({
+const LoginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
 });
+
+export default LoginSchema;
 ```
 
 ### Signup Schema
@@ -154,7 +156,7 @@ export const LoginSchema = z.object({
 // src/modules/auth/schemas/signup.schema.ts
 import { z } from "zod";
 
-export const SignupSchema = z.object({
+const SignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"), // Or your usernameField for authentication
   password: z
@@ -165,6 +167,8 @@ export const SignupSchema = z.object({
       "Password must contain at least one uppercase letter, one lowercase letter, and one number"
     ),
 });
+
+export default SignupSchema;
 ```
 
 :::warning
@@ -177,7 +181,7 @@ This SignupSchema is just an mere example, because these data will basically be 
 // src/modules/auth/schemas/update-password.schema.ts
 import { z } from "zod";
 
-export const UpdatePasswordSchema = z
+const UpdatePasswordSchema = z
   .object({
     currentPassword: z.string(),
     newPassword: z
@@ -192,6 +196,8 @@ export const UpdatePasswordSchema = z
     message: "Passwords don't match",
     path: ["passwordConfirm"],
   });
+
+export default UpdatePasswordSchema;
 ```
 
 ### Update Me Schema
@@ -200,11 +206,13 @@ export const UpdatePasswordSchema = z
 // src/modules/auth/schemas/update-me.schema.ts
 import { z } from "zod";
 
-export const UpdateMeSchema = z.object({
+const UpdateMeSchema = z.object({
   name: z.string().optional(),
   email: z.string().email("Invalid email address").optional(),
   // Add other user fields that you want to allow updating
 });
+
+export default UpdateMeSchema;
 ```
 
 :::warning

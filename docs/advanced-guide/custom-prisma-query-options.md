@@ -59,7 +59,7 @@ Is very important to follow the file name conventions and folder structure state
 The `PrismaQueryOptions` type supports all standard Prisma query parameters:
 
 ```typescript
-export type PrismaQueryOptions<T> = {
+type PrismaQueryOptions<T> = {
   // Global options applied to all operations
   queryOptions?: Prisma.Args<T, "findMany">;
 

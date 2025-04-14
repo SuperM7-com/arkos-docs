@@ -211,8 +211,7 @@ GET /api/available-resources
   "post",
   "user",
   "author",
-  "file-upload",
-  "image-upload"
+  "file-upload" // for all kind of files
   // other resources
 ]
 ```

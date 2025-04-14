@@ -113,19 +113,18 @@ For each model in your application, **Arkos** looks for validation schemas or DT
 
 ```
 /src/modules/[model-name]/
-├── utils/
-│   ├── schemas/
-│   │   ├── create-model-name.schema.ts
-│   │   └── update-model-name.schema.ts
-│   └── dtos/
-│       ├── create-model-name.dto.ts
-│       └── update-model-name.dto.ts
+├── schemas/
+│   ├── create-model-name.schema.ts
+│   └── update-model-name.schema.ts
+├── dtos/
+│   ├── create-model-name.dto.ts
+│   └── update-model-name.dto.ts
 ```
 
 The framework will automatically use these files for validation based on your chosen resolver.
 
 :::warning important
-You do not need to define both schemas and DTO's, it is up to the configuration you choose whether it is zod (schemas) or class-validator (DTO). remember both can be used together currently.
+You do not need to define both schemas and DTO's, it is up to the configuration you choose whether it is zod (schemas) or class-validator (DTO). remember both cannot be used together currently.
 :::
 
 ## Custom Validation Logic
