@@ -19,8 +19,8 @@ For each Prisma model you want to customize, create a router configuration file:
 import { PrismaModelRouterConfig } from "arkos";
 import { Router } from "express";
 
-// Export the configuration with the exact naming convention: modelNameRouterConfig
-export const postRouterConfig: PrismaModelRouterConfig = {
+// Export the configuration with the exact naming convention: config
+export const config: PrismaModelRouterConfig = {
   // Configuration options here
 };
 
@@ -31,7 +31,7 @@ export default router;
 ```
 
 :::danger Important naming conventions
-The router configuration **must** be exported as `modelNameRouterConfig` (camelCase) and your custom router **must** be exported as the default export. If these naming conventions aren't followed, Arkos won't recognize your customizations.
+The router configuration **must** be exported as `config` (lowercase) and your custom router **must** be exported as the default export. If these naming conventions aren't followed, Arkos won't recognize your customizations.
 :::
 
 ### Disabling Endpoints
@@ -42,7 +42,7 @@ You can disable specific endpoints or an entire model's router:
 // src/modules/post/post.router.ts
 import { PrismaModelRouterConfig } from "arkos";
 
-export const postRouterConfig: PrismaModelRouterConfig = {
+export const config: PrismaModelRouterConfig = {
   // Disable all endpoints for this model
   disable: true,
 
@@ -76,7 +76,7 @@ Arkos can generate nested routes for related models, making it easier to work wi
 // src/modules/post/post.router.ts
 import { PrismaModelRouterConfig } from "arkos";
 
-export const postRouterConfig: PrismaModelRouterConfig = {
+export const config: PrismaModelRouterConfig = {
   parent: {
     model: "author",
     // Optional: specify the foreign key field if different from 'authorId'
@@ -107,7 +107,7 @@ You can also specify which nested endpoints to generate:
 import { Router } from "express";
 import { PrismaModelRouterConfig } from "arkos";
 
-export const postRouterConfig: PrismaModelRouterConfig = {
+export const config: PrismaModelRouterConfig = {
   parent: {
     model: "author",
     // Only generate these specific nested endpoints
@@ -141,7 +141,7 @@ import { PrismaModelRouterConfig } from "arkos";
 import { prisma } from "../../utils/prisma";
 
 // Export configuration first
-export const postRouterConfig: PrismaModelRouterConfig = {
+export const config: PrismaModelRouterConfig = {
   // No need to disable endpoints you're overriding - Arkos will use your implementation
 };
 
@@ -183,7 +183,7 @@ import { PrismaModelRouterConfig } from "arkos";
 import { prisma } from "../../utils/prisma";
 
 // Export configuration first for clarity
-export const postRouterConfig: PrismaModelRouterConfig = {
+export const config: PrismaModelRouterConfig = {
   // No need to disable the endpoint you're implementing below
 };
 
@@ -215,7 +215,7 @@ import { prisma } from "../../utils/prisma";
 import { authenticate } from "../../middlewares/auth";
 
 // Export configuration first
-export const postRouterConfig: PrismaModelRouterConfig = {
+export const config: PrismaModelRouterConfig = {
   // Configure nested routes under authors
   parent: {
     model: "author",
@@ -319,6 +319,6 @@ export type PrismaModelRouterConfig = {
 
 4. **Document Custom Behavior**: Add comments to explain custom implementation details, especially for complex business logic.
 
-5. **Consistent Naming**: Follow the established naming conventions (like `modelNameRouterConfig`) to ensure Arkos recognizes your customizations.
+5. **Consistent Naming**: Follow the established naming conventions (like `config`) to ensure Arkos recognizes your customizations.
 
 By following these patterns and guidelines, you can effectively customize Arkos's generated routers to fit your specific application needs.

@@ -21,11 +21,10 @@ const config: Config = {
     locales: ["en", "pt"],
   },
   plugins: [
-    async function myPlugin(context, options) {
+    async function myPlugin() {
       return {
         name: "docusaurus-tailwindcss",
         configurePostCss(postcssOptions) {
-          // Appends TailwindCSS and AutoPrefixer.
           postcssOptions.plugins.push(require("tailwindcss"));
           postcssOptions.plugins.push(require("autoprefixer"));
           return postcssOptions;
@@ -132,34 +131,11 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} SuperM7.com, Lda.`,
     },
     algolia: {
-      // The application ID provided by Algolia
       appId: process.env.ALGOLIA_APP_ID,
-
-      // Public API key: it is safe to commit it
       apiKey: process.env.ALGOLIA_SEARCH_API_KEY,
-
       indexName: process.env.ALGOLIA_INDEX_NAME,
-      // indexName: "test_dev",
-
-      // Optional: see doc section below
       contextualSearch: true,
-
-      // // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
-      // externalUrlRegex: "npmjs\\.com|arkosjs\\.com",
-
-      // replaceSearchResultPathname: {
-      //   from: "/docs/", // or as RegExp: /\/docs\//
-      //   to: "/",
-      // },
-
-      // Optional: Algolia search parameters
-      // searchParameters: {},
-
-      // // Optional: path for search page that enabled by default (`false` to disable it)
-      // searchPagePath: "search",
-
-      // // Optional: whether the insights feature is enabled or not on Docsearch (`false` by default)
-      // insights: false,
+      insights: true,
     },
     prism: {
       theme: prismThemes.oneDark,
