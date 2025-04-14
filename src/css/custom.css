@@ -15,10 +15,16 @@
     @apply hover:no-underline;
   }
 
-  .container,
+  /* .container,
   .navbar__inner {
     @apply mx-auto max-w-6xl;
-  }
+  } */
+}
+
+.container,
+.navbar__inner {
+  margin-inline: auto;
+  max-width: 1536px;
 }
 
 /* @layer base {
