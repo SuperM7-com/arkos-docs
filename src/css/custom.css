@@ -14,6 +14,11 @@
   a {
     @apply hover:no-underline;
   }
+
+  .container,
+  .navbar__inner {
+    @apply mx-auto max-w-6xl;
+  }
 }
 
 /* @layer base {

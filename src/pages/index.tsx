@@ -20,7 +20,7 @@ export default function Home() {
             {/* Hero Content */}
             <div
               id="tailwind"
-              className="max-w-6xl mx-auto text-center md:mb-32 lg:mt-32 md:mt-20 mt-10 relative md:min-h-[40vh] min-h-[55vh]"
+              className="max-w-6xl mx-auto text-center md:mb-32 lg:mt-32 md:mt-20 mt-10 relative h-[100%] md:max-h-[800px]"
             >
               <div className="absolute md:size-[500px] size-[200px] bg-sky-500 rounded-full opacity-30 blur-3xl z-0"></div>
               <div className="absolute bottom-full left-full md:size-[500px] size-[200px] bg-sky-500 rounded-full opacity-50 blur-3xl"></div>
