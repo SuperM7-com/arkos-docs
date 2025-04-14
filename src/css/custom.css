@@ -19,6 +19,10 @@
     @apply flex justify-center;
   }
 
+  .docMainContainer_TGxA {
+    @apply flex justify-center;
+  }
+
   /* .container,
   .navbar__inner {
     @apply mx-auto max-w-6xl;
