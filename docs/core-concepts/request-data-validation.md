@@ -43,7 +43,7 @@ You can switch between validation libraries based on your team's preference with
 Use class-validator with decorators to define validation rules in Data Transfer Objects (DTOs):
 
 ```typescript
-// src/modules/user/utils/dtos/create-user.dto.ts
+// src/modules/user/dtos/create-user.dto.ts
 import { IsString, IsEmail } from "class-validator";
 
 export default class CreateUserDto {
@@ -69,7 +69,7 @@ const validatedUser = await validateDto(CreateUserDto, data);
 Alternatively, define validation rules using Zod schemas:
 
 ```typescript
-// src/modules/user/utils/schemas/create-user.schema.ts
+// src/modules/user/schemas/create-user.schema.ts
 import { z } from "zod";
 
 const CreateUserSchema = z.object({

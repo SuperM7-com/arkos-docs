@@ -45,7 +45,7 @@ If you're using class-validator for validation (the default), you'll define DTOs
 ### Login Validation
 
 ```ts
-// src/modules/auth/utils/dtos/login.dto.ts
+// src/modules/auth/dtos/login.dto.ts
 import { IsString, IsNotEmpty } from "class-validator";
 
 export class LoginDto {
@@ -62,7 +62,7 @@ export class LoginDto {
 ### Signup Validation
 
 ```ts
-// src/modules/auth/utils/dtos/signup.dto.ts
+// src/modules/auth/dtos/signup.dto.ts
 import { IsString, IsEmail, MinLength, Matches } from "class-validator";
 
 export class SignupDto {
@@ -92,7 +92,7 @@ This SignupDto is just an mere example, because these data will basically be sto
 ### Update Password Validation
 
 ```ts
-// src/modules/auth/utils/dtos/update-password.dto.ts
+// src/modules/auth/dtos/update-password.dto.ts
 import { IsString, MinLength, Matches } from "class-validator";
 
 export class UpdatePasswordDto {
@@ -112,7 +112,7 @@ export class UpdatePasswordDto {
 ### Update Me Validation
 
 ```typescript
-// src/modules/auth/utils/dtos/update-me.dto.ts
+// src/modules/auth/dtos/update-me.dto.ts
 import { IsString, IsEmail, IsOptional } from "class-validator";
 
 export class UpdateMeDto {
@@ -139,7 +139,7 @@ If you prefer using Zod for validation, configure your `arkos.init()` with `{ va
 ### Login Schema
 
 ```typescript
-// src/modules/auth/utils/schemas/login.schema.ts
+// src/modules/auth/schemas/login.schema.ts
 import { z } from "zod";
 
 export const LoginSchema = z.object({
@@ -151,7 +151,7 @@ export const LoginSchema = z.object({
 ### Signup Schema
 
 ```ts
-// src/modules/auth/utils/schemas/signup.schema.ts
+// src/modules/auth/schemas/signup.schema.ts
 import { z } from "zod";
 
 export const SignupSchema = z.object({
@@ -174,7 +174,7 @@ This SignupSchema is just an mere example, because these data will basically be 
 ### Update Password Schema
 
 ```ts
-// src/modules/auth/utils/schemas/update-password.schema.ts
+// src/modules/auth/schemas/update-password.schema.ts
 import { z } from "zod";
 
 export const UpdatePasswordSchema = z
@@ -197,7 +197,7 @@ export const UpdatePasswordSchema = z
 ### Update Me Schema
 
 ```typescript
-// src/modules/auth/utils/schemas/update-me.schema.ts
+// src/modules/auth/schemas/update-me.schema.ts
 import { z } from "zod";
 
 export const UpdateMeSchema = z.object({

@@ -48,10 +48,10 @@ The `/src` directory contains the application logic organized into modules:
 │       ├── model-name.middlewares.ts
 │       ├── model-name.prisma-query-options.ts
 │       ├── model-name.service.ts
-│       ├── utils/
-│       └── model-name.service.ts
-│           ├── schemas/
-│           └── dtos/
+│       ├── model-name.service.ts
+│       ├── schemas/
+│       ├── dtos/
+|       └── utils/         # some model utils
 ├── utils/
 │    └── prisma.ts         # Prisma Instance
 ├── app.ts
@@ -130,7 +130,7 @@ export const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
 Define data validation using class-validator for input processing.
 
 ```typescript
-// src/modules/post/utils/dtos/create-post.dto.ts
+// src/modules/post/dtos/create-post.dto.ts
 export class CreatePostDto {
   // Your fields here
 }
@@ -141,7 +141,7 @@ export class CreatePostDto {
 Define validation rules using Zod for request data.
 
 ```ts
-// src/modules/post/utils/schemas/create-post.schema.ts
+// src/modules/post/schemas/create-post.schema.ts
 import { z } from "zod";
 
 export const CreatePostSchema = z.object({

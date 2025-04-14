@@ -15,7 +15,10 @@ export default function Home() {
         description="Backend framework for simplifying API development with automatic route generation, authentication, and minimal configuration."
       >
         {/* Hero Section */}
-        <header id="tailwind" className="bg-[#020d1f] text-white tailwind">
+        <header
+          id="tailwind"
+          className="bg-[#020d1f] text-white tailwind flex justify-center"
+        >
           <div className="container mx-auto px-4 py-12">
             {/* Hero Content */}
             <div
@@ -113,7 +116,7 @@ export default function Home() {
         {/* Features Section */}
         <section
           id="tailwind"
-          className="bg-[#0f1732] text-white py-16 tailwind"
+          className="bg-[#0f1732] text-white py-16 tailwind  flex justify-center"
         >
           <div className="container mx-auto relative max-w-6xl">
             <div className="absolute top-[25%] left-[70%] md:size-[700px] size-[200px] bg-sky-500 rounded-full opacity-20 blur-3xl z-[1]"></div>

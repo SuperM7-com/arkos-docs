@@ -15,6 +15,10 @@
     @apply hover:no-underline;
   }
 
+  footer {
+    @apply flex justify-center;
+  }
+
   /* .container,
   .navbar__inner {
     @apply mx-auto max-w-6xl;
