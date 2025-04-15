@@ -84,26 +84,42 @@ Authenticates a user and returns an access token.
 
 - The username field (default is "username") can be configured in your application to email, phone or whatever field you want to use.
 
-**Example Changing The Username Field**
+### Example Changing The Username Field
 
 ```ts
 // src/app.ts
 arkos.init({
   authentication: {
-    usernameField: "email", // to use the email field in user to authentication
+    mode: "static",
+    login: {
+      allowedUsernames: ["email", "phones.some.number", "profile.nickname"],
+    },
   },
 });
 ```
 
-or do it on the fly through any @unique field in user model, example below with phone field (It must be @unique in your user prisma schema):
+- **`email`**:
+  Will be marked as default because it's the first.
+
+- **`phones.some.number`**: having `phones` with prisma type `Phone[]` (list field), where model `Phone` have a @unique `number` field.
+
+- **`profile.nickname`**: where profile is of prisma type `UserProfile` (another model one-to-one) and it contains a @unique field `nickname`.
+
+:::info
+By passing many fields you will allow users to be able to login with different fields according to what will be configured on the fly.
+:::
+
+or you can do it on the fly through any `@unique` field in user model or even a relation field that contains an `@unique` field as shown on example above with `phones.some.number` and `profile.nickname`.
+
+Example below it shows with phone number from field `phones` on user (It contains a field `number` as @unique):
 
 ```curl
-POST /api/auth/login?usernameField="phone"
+POST /api/auth/login?usernameField=phones.some.number
 ```
 
 ```json
 {
-  "phone": "+258891234567",
+  "number": "+258891234567",
   "password": "StrongP@ss123"
 }
 ```
@@ -114,12 +130,13 @@ POST /api/auth/login?usernameField="phone"
   - `"cookie-only"`: Token only in cookie
   - Default: `"both"` response and cookie
 
-**Example Changing Token Delivery Method**
+### Example Changing Token Delivery Method
 
 ```ts
 // src/app.ts
 arkos.init({
   authentication: {
+    mode: "static", // or dynamic
     login: {
       sendAccessTokenThrough: "cookie-only",
     },
@@ -274,6 +291,7 @@ You can customize this by passing an option when initializing `Arkos`:
 // src/app.ts
 arkos.init({
   authentication: {
+    mode: "static", // or dynamic
     login: {
       sendAccessTokenThrough: "cookie-only",
     },
@@ -312,7 +330,7 @@ Read more about the mentioned package [https://www.npmjs.com/package/express-rat
 }
 ```
 
-If you were using another `usernameField` it would show it rather than `email`.
+If you were using another `login.allowedUsernames` it would show it, rather than `email`.
 
 ### Incorrect Credentials (401)
 

@@ -51,7 +51,7 @@ import { IsString, IsNotEmpty } from "class-validator";
 export default class LoginDto {
   @IsString()
   @IsNotEmpty()
-  username: string; // Or email based on usernameField config
+  username: string; // Or email based on login.allowedUsernames config
 
   @IsString()
   @IsNotEmpty()
@@ -158,7 +158,7 @@ import { z } from "zod";
 
 const SignupSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"), // Or your usernameField for authentication
+  email: z.string().email("Invalid email address"), // Or your login.allowedUsernames for authentication
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")

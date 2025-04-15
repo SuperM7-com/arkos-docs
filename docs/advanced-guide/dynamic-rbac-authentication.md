@@ -190,7 +190,7 @@ The User model fields serve the same purposes as in Static RBAC:
 #### `username: String`
 
 - Primary login identifier with unique constraint
-- Can be changed to others like email and customized to work in authentication via the `usernameField` option
+- Can be changed to others like email and customized to work in authentication via the `login.allowedUsernames` option
 
 ```ts
 // src/app.ts
@@ -199,11 +199,15 @@ import arkos from "arkos";
 arkos.init({
   authentication: {
     mode: "dynamic",
-    usernameField: "email", // Use email field for authentication
+    login: {
+      allowedUsernames: ["email"],
+    }, // Use email field for authentication
     // other configs
   },
 });
 ```
+
+Dive deep about allowed username fields and also see how to login with nested fields from user model on this guide [Example Changing The Username Field Guide](/docs/authentication-system/sending-authentication-requests#example-changing-the-username-field).
 
 #### `password: String`
 

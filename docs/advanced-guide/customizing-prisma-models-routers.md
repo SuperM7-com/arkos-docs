@@ -16,11 +16,11 @@ For each Prisma model you want to customize, create a router configuration file:
 
 ```typescript
 // src/modules/post/post.router.ts
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 import { Router } from "express";
 
 // Export the configuration with the exact naming convention: config
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   // Configuration options here
 };
 
@@ -40,9 +40,9 @@ You can disable specific endpoints or an entire model's router:
 
 ```typescript
 // src/modules/post/post.router.ts
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   // Disable all endpoints for this model
   disable: true,
 
@@ -74,13 +74,13 @@ Arkos can generate nested routes for related models, making it easier to work wi
 
 ```typescript
 // src/modules/post/post.router.ts
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   parent: {
     model: "author",
     // Optional: specify the foreign key field if different from 'authorId'
-    referenceField: "authorId",
+    foreignKey: "authorId",
     // Optional: specify which endpoints to generate
     endpoints: "*", // Generate all endpoints
   },
@@ -105,9 +105,9 @@ You can also specify which nested endpoints to generate:
 ```typescript
 // src/modules/post/post.router.ts
 import { Router } from "express";
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   parent: {
     model: "author",
     // Only generate these specific nested endpoints
@@ -137,11 +137,11 @@ Based on what was stated on the warning above you may want check the following g
 ```typescript
 // src/modules/post/post.router.ts
 import { Router } from "express";
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 import { prisma } from "../../utils/prisma";
 
 // Export configuration first
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   // No need to disable endpoints you're overriding - Arkos will use your implementation
 };
 
@@ -179,11 +179,11 @@ You can selectively override specific endpoints while keeping the auto-generated
 ```typescript
 // src/modules/post/post.router.ts
 import { Router } from "express";
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 import { prisma } from "../../utils/prisma";
 
 // Export configuration first for clarity
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   // No need to disable the endpoint you're implementing below
 };
 
@@ -210,12 +210,12 @@ Here's a more comprehensive example showing various customization techniques:
 ```typescript
 // src/modules/post/post.router.ts
 import { Router } from "express";
-import { PrismaModelRouterConfig } from "arkos";
+import { RouterConfig } from "arkos";
 import { prisma } from "../../utils/prisma";
 import { authenticate } from "../../middlewares/auth";
 
 // Export configuration first
-export const config: PrismaModelRouterConfig = {
+export const config: RouterConfig = {
   // Configure nested routes under authors
   parent: {
     model: "author",
@@ -268,10 +268,10 @@ export default router;
 
 ## Configuration Type Reference
 
-Here's the complete type definition for `PrismaModelRouterConfig`:
+Here's the complete type definition for `RouterConfig`:
 
 ```typescript
-export type AvailableEndpoints =
+export type RouterEndpoint =
   | "createOne"
   | "findOne"
   | "updateOne"
@@ -281,16 +281,16 @@ export type AvailableEndpoints =
   | "updateMany"
   | "deleteMany";
 
-export type PrismaModelRouterConfig = {
+export type RouterConfig = {
   parent?: {
     // Parent model name in kebab-case and singular
     model?: string;
 
     // Field that stores the parent ID relation (defaults to `${modelName}Id`)
-    referenceField?: string;
+    foreignKey?: string;
 
     // Which nested endpoints to generate
-    endpoints?: "*" | AvailableEndpoints | AvailableEndpoints[];
+    endpoints?: "*" | RouterEndpoint | RouterEndpoint[];
   };
 
   // Disable specific endpoints or all endpoints

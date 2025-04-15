@@ -56,7 +56,7 @@ Create interceptors in your module's middleware file for the post model:
 
 ```typescript
 // src/modules/post/post.middlewares.ts
-import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
 
 export const beforeCreateOne = catchAsync(
@@ -111,7 +111,7 @@ If you wish to pass some data from `before` to `after` while handling the reques
 // src/modules/posts/post.middlewares.ts
 
 // src/modules/author/author.middlewares.ts
-import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
 
 export const beforeCreateOne = catchAsync(
@@ -177,7 +177,7 @@ Example middleware implementation with author model:
 
 ```ts
 // src/modules/author/author.middlewares.ts
-import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "express";
+import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
 
 export const beforeCreateOne = catchAsync(

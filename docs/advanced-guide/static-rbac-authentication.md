@@ -124,7 +124,7 @@ model User {
 
 - Serves as the primary login identifier
 - `@unique` constraint ensures no duplicate usernames
-- Flexible design allows customization to email, phone, or other identifiers. by passing usernameField in `arkos.init()` under authentication field.
+- Flexible design allows customization to email, phone, or other identifiers. by passing `login.allowedUsernames` in `arkos.init()` under authentication field.
 
 ```ts
 // src/app.ts
@@ -133,13 +133,14 @@ import arkos from "arkos";
 arkos.init({
   authentication: {
     mode: "static",
-    usernameField: "email", // If wants to use User email field for
-    // authentication or even on the fly by passing ?usernameField=phone
-    // for example when POST /api/auth/login
-    // other configs
+    login: {
+      allowedUsernames: ["email"], // If wants to use User email field for login
+    },
   },
 });
 ```
+
+Dive deep about allowed username fields and also see how to login with nested fields from user model on this guide [Example Changing The Username Field Guide](/docs/authentication-system/sending-authentication-requests#example-changing-the-username-field).
 
 #### `password: String`
 

@@ -176,6 +176,7 @@ You can customize error messages by configuring your validation options or by im
 ```ts
 arkos.init({
   authentication: {
+    mode: "static", // or dynamic
     passwordValidation: {
       regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/,
       message:
