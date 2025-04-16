@@ -25,6 +25,7 @@ The project structure follows these key principles:
 ├── src/                   # Application source code
 │   ├── modules/           # Feature modules
 │   └── utils/             # Shared utilities
+|        └── prisma.ts         # Prisma Instance
 ├── uploads/               # File storage
 ├── .env.development       # Env for development (Optional Or .env)
 ├── .env.production        # Env for production (Or .env)
@@ -32,29 +33,34 @@ The project structure follows these key principles:
 
 This approach keeps each model definition separate, making them easier to manage and maintain.
 
+:::warning
+Pay attention to the structure, because **Arkos** uses file-based in some instances so it is important to aware of this.
+:::
+
 ## Source Directory
 
 The `/src` directory contains the application logic organized into modules:
 
 ```
-/src/
-├── modules/
-│   ├── auth/                           # Authentication module
-│   │   ├── dtos/                       # Class Validator Dtos
-│   │   ├── schemas/                    # Zod schemas
-│   │   └── utils/                      # Auth utilities
-│   └── model-name/                     # Prisma Model module
-│       ├── model-name.auth-configs.ts
-│       ├── model-name.middlewares.ts
-│       ├── model-name.prisma-query-options.ts
-│       ├── model-name.service.ts
-│       ├── model-name.service.ts
-│       ├── schemas/
-│       ├── dtos/
-|       └── utils/         # some model utils
-├── utils/
-│    └── prisma.ts         # Prisma Instance
-├── app.ts
+root/src/
+    ├── modules/
+    │   ├── auth/                           # Authentication module
+    │   │   ├── dtos/                       # Class Validator Dtos
+    │   │   ├── schemas/                    # Zod schemas
+    │   │   └── utils/                      # Auth utilities
+    │   └── model-name/                     # Prisma Model module
+    │       ├── model-name.auth-configs.ts
+    │       ├── model-name.middlewares.ts
+    │       ├── model-name.prisma-query-options.ts
+    │       ├── model-name.service.ts
+    │       ├── model-name.router.ts
+    │       ├── model-name.controller.ts
+    │       ├── schemas/
+    │       ├── dtos/
+    |       └── utils/         # some model utils
+    ├── utils/
+    │    └── prisma.ts         # Prisma Instance
+    ├── app.ts
 ```
 
 :::tip
