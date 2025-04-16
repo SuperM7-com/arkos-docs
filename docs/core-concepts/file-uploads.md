@@ -145,7 +145,7 @@ When implementing file updates in your application:
 import { getFileUploaderServices } from "arkos/services";
 import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
-import { prisma } from "../../../utils/prisma";
+import { prisma } from "../../utils/prisma";
 
 export const beforeUpdateOne = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {

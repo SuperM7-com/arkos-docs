@@ -186,8 +186,8 @@ By overriding default methods these new ones will then be used by **Arkos** behi
 
 ```ts
 // src/modules/user/user.service.ts
-import { BaseService } from "arkos";
-import { prisma } from "../../../utils/prisma";
+import { BaseService } from "arkos/services";
+import { prisma } from "../../utils/prisma";
 import { AppError } from "arkos/error-handler";
 import { authService } from "arkos/services";
 
