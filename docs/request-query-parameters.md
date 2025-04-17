@@ -294,14 +294,16 @@ This is `disabled` by default for securites reasons because it allows end users 
 
 A better way to use this is trough `prisma-query-options` files that will only use this parameter on your code level for you to customize the default behavior of your prisma queries that are handled automatically by **Arkos**, you can [read more about](/docs/advanced-guide/custom-prisma-query-options).
 
-By the way, if you would like to activate the request query paramenter `prismaQueryOptions` do the following under your `src/app.ts`:
+By the way, if you would like to activate the request query paramenter `allowDangerousPrismaQueryOptions` do the following under your `src/app.ts`:
 
 ```ts
 import arkos from "arkos";
 // your other codes
 arkos.init({
   request: {
-    allowPrismaQueryOptionsParameter: true, // (default is false)
+    parameters: {
+      allowDangerousPrismaQueryOptions: true, // (default is false)
+    },
   },
   // other configurations
 });
