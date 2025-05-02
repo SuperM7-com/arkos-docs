@@ -118,7 +118,7 @@ export const afterLogin = catchAsync(async (req, res, next) => {
 });
 ```
 
-see full guide [clicking here](/docs/authentication-system/authentication-interceptor-middlewares).
+see full guide [clicking here](/docs/guide/authentication-system/authentication-interceptor-middlewares).
 
 ## Best Practices
 

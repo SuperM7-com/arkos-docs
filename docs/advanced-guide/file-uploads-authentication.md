@@ -30,15 +30,15 @@ import { AuthConfigs } from "arkos/auth";
 const fileUploadAuthConfigs: AuthConfigs = {
   authenticationControl: {
     // Work
-    create: true, // Require authentication for file uploads (default)
-    view: false, // Make it public
-    delete: true, // Require authentication for file deletion (default)
+    Create: true, // Require authentication for file uploads (default)
+    View: false, // Make it public
+    Delete: true, // Require authentication for file deletion (default)
   },
   accessControl: {
     // only works on Static Authentication for Dynamic use DB
-    create: ["admin", "editor"], // Only these roles can upload files
-    view: ["admin", "editor", "viewer"], // These roles can view files
-    delete: ["admin"], // Only admin role can delete files
+    Create: ["admin", "editor"], // Only these roles can upload files
+    View: ["admin", "editor", "viewer"], // These roles can view files
+    Delete: ["admin"], // Only admin role can delete files
   },
 };
 
@@ -49,11 +49,11 @@ export default fileUploadAuthConfigs;
 
 For file uploads, the following actions are relevant:
 
-- `create` - Controls who can upload files
-- `view` - Controls who can view/download files
-- `delete` - Controls who can delete files
+- `Create` - Controls who can upload files
+- `View` - Controls who can view/download files
+- `Delete` - Controls who can delete files
 
-The `update` action is not applicable to the default file upload system, as **Arkos** does not handle file updates directly. Instead, file updates are typically handled as a delete followed by a create operation.
+The `Update` action is not applicable to the default file upload system, as **Arkos** does not handle file updates directly. Instead, file updates are typically handled as a delete followed by a create operation.
 
 ## File Upload Authentication with Dynamic RBAC
 
@@ -64,7 +64,7 @@ When using Dynamic RBAC ([See Guide](/docs/advanced-guide/dynamic-rbac-authentic
 To grant file upload permissions:
 
 1. Use `file-upload` as the `resource` field value in the `AuthPermission` model
-2. Use `create`, `view`, or `delete` as the `action` field value
+2. Use `Create`, `View`, or `Delete` as the `action` field value
 
 Example of creating permissions in your database:
 
@@ -73,7 +73,7 @@ Example of creating permissions in your database:
 await prisma.authPermission.create({
   data: {
     resource: "file-upload", // Special resource for file uploads
-    action: "create", // For upload permissions
+    action: "Create", // For upload permissions
     roles: {
       connect: { id: editorRoleId },
     },
@@ -83,7 +83,7 @@ await prisma.authPermission.create({
 await prisma.authPermission.create({
   data: {
     resource: "file-upload", // Special resource for file uploads
-    action: "view", // For view permissions
+    action: "View", // For view permissions
     roles: {
       connect: { id: editorRoleId },
     },
@@ -93,7 +93,7 @@ await prisma.authPermission.create({
 await prisma.authPermission.create({
   data: {
     resource: "file-upload", // Special resource for file uploads
-    action: "view", // For view permissions
+    action: "View", // For view permissions
     roles: {
       connect: { id: viewerRoleId },
     },
@@ -103,7 +103,7 @@ await prisma.authPermission.create({
 await prisma.authPermission.create({
   data: {
     resource: "file-upload", // Special resource for file uploads
-    action: "view", // For view permissions
+    action: "View", // For view permissions
     roles: {
       connect: { id: adminRoleId },
     },
@@ -113,7 +113,7 @@ await prisma.authPermission.create({
 await prisma.authPermission.create({
   data: {
     resource: "file-upload", // Special resource for file uploads
-    action: "delete", // For delete permissions
+    action: "Delete", // For delete permissions
     roles: {
       connect: { id: adminRoleId },
     },
@@ -135,9 +135,9 @@ import { AuthConfigs } from "arkos/auth";
 
 const fileUploadAuthConfigs: AuthConfigs = {
   authenticationControl: {
-    create: true, // Require authentication for file uploads
-    view: false, // Make it public
-    delete: true, // Require authentication for file deletion
+    Create: true, // Require authentication for file uploads
+    View: false, // Make it public
+    Delete: true, // Require authentication for file deletion
   },
   // Note: accessControl is ignored in Dynamic RBAC mode
   // as permissions are defined in the database
@@ -148,7 +148,7 @@ export default fileUploadAuthConfigs;
 
 ## Handling File Updates
 
-Since the `update` action is not directly supported for file operations, developers should implement file updates as a two-step process:
+Since the `Update` action is not directly supported for file operations, developers should implement file updates as a two-step process:
 
 1. Upload a new file
 2. Delete the existing file
@@ -172,7 +172,7 @@ In future releases, **Arkos** may include:
 
 - Specific resources for different file types (e.g., `image-upload`, `video-upload`)
 - Built-in metadata storage for files
-- Direct support for the `update` action for file operations
+- Direct support for the `Update` action for file operations
 
 If you have suggestions or need additional features, please:
 

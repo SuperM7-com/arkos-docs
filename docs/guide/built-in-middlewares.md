@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 5
 ---
 
 # Built-in Middlewares
@@ -188,10 +188,10 @@ This will not override the built-in middlewares because they will be placed righ
 
 ### Where Custom Middlewares Are Placed
 
-Bear in mind that these stack of middlewares will be passed right after all built-in middlewares mentioned above. If you want to put custom middlewares before all **Arkos** built-in configurations pass a function to `configureApp` under configs to have acess to express app before any **Arkos** configurations, see the [Acessing The Express App Guide](/docs/accessing-the-express-app).
+Bear in mind that these stack of middlewares will be passed right after all built-in middlewares mentioned above. If you want to put custom middlewares before all **Arkos** built-in configurations pass a function to `configureApp` under configs to have acess to express app before any **Arkos** configurations, see the [Acessing The Express App Guide](/docs/guide/accessing-the-express-app).
 
 ## Next Steps:
 
 - [Replacing Or Disabling Built-in Middlewares](/docs/advanced-guide/modifying-built-in-middlewares)
 - [Built-in Routers](/docs/api-reference/built-in-routers)
-- [Acessing The Express App](/docs/accessing-the-express-app)
+- [Acessing The Express App](/docs/guide/accessing-the-express-app)

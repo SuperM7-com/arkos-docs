@@ -18,7 +18,7 @@ import { authService } from "arkos/services";
 On the following section you will various examples on how you can use the authService, you ain't restricted to those but also in the same time bear in mind that **Arkos** handles many of auth relate scenarios, such as authentication, authorization, password hashing, password checks and many others.
 :::
 
-Before proceed reading this guide is highly encouragend to read the guide about how **Arkos** uses this under the hood so that you do not miss anything and try to reivent the wheel yourself, [Arkos Authentication Flow Guide](/docs/authentication-system/authentication-system-flow).
+Before proceed reading this guide is highly encouragend to read the guide about how **Arkos** uses this under the hood so that you do not miss anything and try to reivent the wheel yourself, [Arkos Authentication Flow Guide](/docs/guide/authentication-system/guide/authentication-system-flow).
 
 ## API Reference
 
@@ -126,7 +126,7 @@ export const beforeCreateOne = catchAsync(async (req, res, next) => {
 });
 ```
 
-#### `hashPassword(password)`    
+#### `hashPassword(password)`
 
 Hashes a plain text password using bcrypt.
 
@@ -330,15 +330,15 @@ export default router;
 
 ### Access Control Handlers
 
-#### `handleActionAccessControl(authConfigs, action, modelName)`
+#### `handleAccessControl(action, modelName, accessControlConfig)`
 
 Middleware function to handle access control based on user roles and permissions.
 
 **Parameters:**
 
-- `authConfigs` (AuthConfigs): The configuration object for authentication and access control
-- `action` (ControllerActions): The action being performed (e.g., create, update, delete, view)
+- `action` (AccessAction): The action being performed (e.g., Create, Update, Delete, View or custom actions)
 - `modelName` (string): The model name that the action is being performed on
+- `accessControlConfig` (AccessControlConfig): The configuration object for authentication and access control
 
 **Returns:**
 
@@ -360,16 +360,16 @@ const generateDepartmentReport = catchAsync(async (req, res, next) => {
 // Apply contextual access control with department check
 const protectedReportAccess = [
   authService.authenticate,
-  authService.handleActionAccessControl(
-    { accessControl: ["admin", "departmentHead"] },
+  authService.handleAccessControl(
+    "View", // action
+    "report", // resource name
+    ["Admin", "DepartmentHead"]
     // restricts only to those roles in static rbac
-    "view",
-    "Report"
   ),
   // Additional custom department ownership check
   catchAsync(async (req, res, next) => {
     if (
-      req.user.role !== "admin" &&
+      req.user.role !== "Admin" &&
       req.user.departmentId !== parseInt(req.params.departmentId)
     ) {
       return next(
@@ -384,14 +384,14 @@ const protectedReportAccess = [
 export { protectedReportAccess };
 ```
 
-#### `handleAuthenticationControl(authConfigs, action)`
+#### `handleAuthenticationControl(action, authenticationControlConfig)`
 
 Handles authentication control by checking the configuration.
 
 **Parameters:**
 
-- `authConfigs` (AuthConfigs | undefined): The authentication configuration object
-- `action` (ControllerActions): The action being performed
+- `action` (AccessAction): The action being performed
+- `authenticationControlConfig` (AuthenticationControlConfig | undefined): The authentication configuration object
 
 **Returns:**
 
@@ -419,8 +419,8 @@ const getContentData = catchAsync(async (req, res, next) => {
 // Apply optional authentication for tiered content
 const tieredContentAccess = [
   authService.handleAuthenticationControl(
-    { authenticationControl: { view: false } }, // Not required but supported
-    "view"
+    "View",
+    { View: false } // Not required but supported
   ),
   // Custom middleware to track authentication status
   catchAsync(async (req, res, next) => {
@@ -433,25 +433,65 @@ const tieredContentAccess = [
 export { tieredContentAccess };
 ```
 
+## Custom Actions and Extended Authentication
+
+The `AccessAction` type can be extended beyond the basic CRUD operations ("Create", "Update", "Delete", "View") to include custom actions specific to your application needs. This works in both static and dynamic authentication modes.
+
+:::info
+When defining custom actions, note that the standard base actions ("Create", "Update", "Delete", "View") must use Pascal case (capital first letter). Your custom actions can use any naming convention, though we recommend maintaining consistency in your codebase.
+:::
+
+**Example of custom actions:**
+
+```ts
+// Custom export functionality with specific access controls
+router.get(
+  "/api/reports/export",
+  authService.authenticate,
+  authService.handleAccessControl(
+    "Export", // Custom action in Pascal case
+    "report",
+    ["Admin", "Analyst"] // accessControl
+  ),
+  exportReportController
+);
+
+// Custom bulk operation with specific permissions
+router.post(
+  "/api/users/bulk-invite",
+  authService.authenticate,
+  authService.handleAccessControl(
+    "BulkInvite", // Custom action in Pascal case
+    "user",
+    ["Admin", "HR"] // accessControl
+  ),
+  bulkInviteController
+);
+```
+
+:::tip
+For more detailed information on implementing authentication in custom routers, see the guide on [Adding Authentication to Custom Routers](/docs/guide/adding-custom-routers#adding-authentication-to-custom-routers).
+:::
+
 ## Type Reference
 
 This section provides reference information for the TypeScript types used with the auth service.
 
-### `ControllerActions`
+### `AccessAction`
 
-Represents the possible actions that can be performed by a controller.
+Represents the possible actions that can be performed by a controller, including standard CRUD operations and custom actions.
 
 ```ts
-export type ControllerActions = "create" | "update" | "delete" | "view";
+export type AccessAction = "Create" | "Update" | "Delete" | "View" | string;
 ```
 
 ### `AccessControlRules`
 
-Defines access control rules for different controller actions.
+Defines access control rules for different controller actions. Each key maps to an array of role names that are allowed to perform the action.
 
 ```ts
 export type AccessControlRules = {
-  [key in ControllerActions]: any[]; // any[] as list of roles in static rbac
+  [key in AccessAction]: string[];
 };
 ```
 
@@ -461,8 +501,26 @@ Specifies which actions require authentication.
 
 ```ts
 export type AuthenticationControlRules = {
-  [key in ControllerActions]: boolean;
+  [key in AccessAction]: boolean;
 };
+```
+
+### `AuthenticationControlConfig`
+
+Configuration for authentication control. Can be a boolean (applies to all actions) or specific rules per action.
+
+```ts
+export type AuthenticationControlConfig =
+  | boolean
+  | Partial<AuthenticationControlRules>;
+```
+
+### `AccessControlConfig`
+
+Configuration for access control. Can be an array of roles (applies to all actions) or specific rules per action.
+
+```ts
+export type AccessControlConfig = string[] | Partial<AccessControlRules>;
 ```
 
 ### `AuthConfigs`
@@ -471,8 +529,8 @@ Configuration for authentication and access control.
 
 ```ts
 export type AuthConfigs = {
-  authenticationControl?: boolean | Partial<AuthenticationControlRules>;
-  accessControl?: any[] | Partial<AccessControlRules>;
+  authenticationControl?: AuthenticationControlConfig;
+  accessControl?: AccessControlConfig;
 };
 ```
 

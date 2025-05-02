@@ -276,7 +276,7 @@ For endpoints requiring authentication, you can provide the token in one of two 
 
 ## Data Validation
 
-Even though this is an special module in **Arkos** it also supports data validation through `zod` or `class-validator` for ensuring that you endpoints are protected from unwanted data and validate with your own business logic, you refer to [Authentication Data Validation Guide](/docs/authentication-system/authentication-data-validation) to more details.
+Even though this is an special module in **Arkos** it also supports data validation through `zod` or `class-validator` for ensuring that you endpoints are protected from unwanted data and validate with your own business logic, you refer to [Authentication Data Validation Guide](/docs/guide/authentication-system/authentication-data-validation) to more details.
 
 ## Rate Limiting
 
@@ -341,36 +341,200 @@ If you were using another `login.allowedUsernames` it would show it, rather than
 }
 ```
 
-## Roles and Permissions Management
+## Dynamic Roles and Permissions Management
 
-For advanced RBAC (Role-Based Access Control) applications, the following endpoints are available:
+For applications using [`Dynamic RBAC`](/docs/advanced-guide/dynamic-rbac-authentication) , the following endpoints are available:
+
+:::tip
+Notice that these are normal prisma models management nothing special, this is here just for example completion.
+:::
 
 ### Role Management
+
+**Endpoint:**
 
 ```
 /api/auth-roles
 ```
 
+**Description:**
+
 CRUD operations for managing roles.
 
+#### Create Role
+
+```bash
+POST /api/auth-roles
+```
+
+```json
+{
+  "name": "Administrator"
+}
+```
+
+#### Get All Roles
+
+```bash
+GET /api/auth-roles
+```
+
+#### Get One Role
+
+```bash
+GET /api/auth-roles/:id
+```
+
+#### Update Role
+
+```bash
+PUT /api/auth-roles/:id
+```
+
+```json
+{
+  "name": "Coordinator"
+}
+```
+
+#### Delete Role
+
+```bash
+DELETE /api/auth-roles/:id
+```
+
 ### Permission Management
+
+**Endpoint:**
 
 ```
 /api/auth-permissions
 ```
 
+**Description:**
+
 CRUD operations for managing permissions.
 
+#### Create Permission
+
+```bash
+POST /api/auth-permissions
+```
+
+```json
+{
+  "resource": "user", // prisma models in kebab-case or other custom resource
+  "action": "Create", // Update, View, Delete or other any custom action
+  "role": {
+    "id": "role-uuid"
+  }
+}
+```
+
+#### Example: creating permission for custom resource with custom action
+
+```json
+{
+  "resource": "PDF", // prisma models in kebab-case or other custom resource
+  "action": "Export", // Update, View, Delete or other any custom action
+  "role": {
+    "id": "role-uuid"
+  }
+}
+```
+
+:::warning important
+The `resource` could be an prisma model name in lowercase and kebab-case, file-upload (for file uploads) or even any other resource name you would like to protect when using the built-in auth system in your own created routers. see [Adding Authentication In Custom Routes](/docs/guide/adding-custom-routers#adding-authentication-in-custom-routers)
+:::
+
+#### Get All Permissions
+
+```bash
+GET /api/auth-permissions
+```
+
+#### Get One Permission
+
+```bash
+GET /api/auth-permissions/:id
+```
+
+#### Update Permission
+
+```bash
+PUT /api/auth-permissions/:id
+```
+
+```json
+{
+  "resource": "user",
+  "action": "Delete"
+}
+```
+
+#### Delete Permission
+
+`**DELETE**`/api/auth-permissions/:id`
+
 ### User Role Assignment
+
+**Endpoint:**
 
 ```
 /api/user-roles
 ```
 
+**Description:**  
 CRUD operations for assigning roles to users.
 
+#### Assign Role to User
+
+```bash
+POST /api/user-roles
+```
+
+```json
+{
+  "userId": "user-uuid",
+  "roleId": "role-uuid"
+}
+```
+
+#### Get All User Roles
+
+```bash
+GET /api/user-roles
+```
+
+#### Get One User Role
+
+```bash
+GET /api/user-roles/:id
+```
+
+#### Update User Role Assignment
+
+```bash
+PUT /api/user-roles/:id
+```
+
+```json
+{
+  "userId": "user-uuid",
+  "roleId": "new-role-uuid"
+}
+```
+
+#### Remove User Role
+
+```bash
+DELETE /api/user-roles/:id
+```
+
+---
+
 :::tip important
-These are normal prisma models, so they get their own auto generated endpoints as other models, the only difference are that these are used in auth system when you are using Dynamic RBAC. to manipulate them send plain requests as normal models ([read more about](/docs/sending-requests)), and it is also valid for validation treat them as other models ([see more](/docs/core-concepts/request-data-validation)).
+These are normal prisma models, so they get their own auto generated endpoints as other models, the only difference are that these are used in auth system when you are using Dynamic RBAC. to manipulate them send plain requests as normal models ([read more about](/docs/guide/sending-requests)), and it is also valid for validation treat them as other models ([see more](/docs/core-concepts/request-data-validation)).
 :::
 
 For detailed information about implementing and configuring Static RBAC or Dynamic RBAC, please refer to the [Static RBAC Guide](/docs/advanced-guide/static-rbac-authentication) or [Dynamic RBAC Guide](/docs/advanced-guide/dynamic-rbac-authentication).

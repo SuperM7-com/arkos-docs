@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 2
 ---
 
 # Request Query Parameters
@@ -313,7 +313,7 @@ arkos.init({
 
 As **Arkos** to easy developers lifes, there is a easier way to write the all this query parameters we've seen so far, this was inspired from the `Django Framework`:
 
-So instead of writing the query params as we did before in all previous examples we can write it differently, example translating the [8. Combining Multiple Query Features](/docs/request-query-parameters#8-combining-multiple-query-features) to this other style:
+So instead of writing the query params as we did before in all previous examples we can write it differently, example translating the [8. Combining Multiple Query Features](/docs/guide/request-query-parameters#8-combining-multiple-query-features) to this other style:
 
 Instead of this:
 
@@ -328,9 +328,9 @@ GET api/products?search=wireless&price__gte=50&price__lt=200&sort=-price&page=2&
 
 ```
 
-And it will produce the same query as in [8. Combining Multiple Query Features](/docs/request-query-parameters#8-combining-multiple-query-features).
+And it will produce the same query as in [8. Combining Multiple Query Features](/docs/guide/request-query-parameters#8-combining-multiple-query-features).
 
-How this actually works? [see here](/docs/api-reference/request-query-parameters-like-django).
+How this actually works? [see here](/docs/api-reference/guide/request-query-parameters-like-django).
 
 :::info
 You can use both approaches at the same time, it will work seamlessly.

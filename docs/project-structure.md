@@ -97,12 +97,12 @@ import { AuthConfigs } from "arkos/auth";
 
 const postAuthConfigs: AuthConfigs = {
   authenticationControl: {
-    view: false, // Public endpoint
+    View: false, // Public endpoint
   },
   accessControl: {
-    create: ["author", "admin"],
-    update: ["author", "admin"],
-    delete: ["admin"],
+    Create: ["Author", "Admin"],
+    Update: ["Author", "Admin"],
+    Delete: ["Admin"],
   },
 };
 
@@ -117,8 +117,9 @@ Configure reusable Prisma query parameters.
 // src/modules/user/user.prisma-query-options.ts
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
+import { prisma } from "../../utils/prisma";
 
-const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
+const userPrismaQueryOptions: PrismaQueryOptions<typeof prisma.user> = {
   findOne: {
     include: {
       profile: true,
@@ -168,24 +169,92 @@ The `/uploads` directory stores application uploaded files:
 ├── documents/            # Document files (PDF, DOC, etc.)
 ├── images/               # Image files
 ├── videos/               # Video files
-└── Other files
+└── files/                # Other files (Not specified above)
 ```
 
 ## Environment Configuration
 
-The project uses separate environment files for different deployment scenarios:
+**Arkos** loads environment variables in a prioritized order:
+
+1. `.env.defaults` - Base defaults (lowest priority)
+2. `.env.[NODE_ENV]` - Environment-specific variables (development, production, staging, test etc.)
+3. `.env.[NODE_ENV].local` - Environment-specific local overrides
+4. `.env.local` - Local environment overrides
+5. `.env` - Main environment variables
+6. Process environment variables - System-level variables (highest priority)
 
 ```
+/.env.defaults            # Default values for all environments
 /.env.development         # Development environment variables
+/.env.development.local   # Local development overrides (not committed to repo)
 /.env.production          # Production environment variables
+/.env.production.local    # Local production overrides (not committed to repo)
 /.env.staging             # Staging environment variables
-/.env
-/.env.local
+/.env.local               # Local overrides for all environments
+/.env                     # Main environment file
 ```
 
-:::info
-Other common .env patterns will be added soon. you can even open an issue for a specific one or may become a contributor on [Github](https://github.com/Uanela/arkos).
-:::
+Note that `.local` files are typically excluded from version control and are meant for local development customizations and will not be loaded on production. Required environment variables include: `DATABASE_URL` for prisma.
+
+## .gitignore file
+
+Below is a part of a recommended `.gitignore` configuration for your **Arkos** project that covers common files and directories that should be excluded from version control:
+
+```
+# Dependencies
+/node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+
+# Build output dir
+/build
+```
+
+This configuration excludes dependency directories, environment files with potential secrets, fill free to add your own patterns here.
+
+# Package.json Scripts
+
+Add the following scripts to your `package.json` file to utilize the Arkos CLI commands:
+
+```json
+{
+  // your configs
+  "scripts": {
+    "dev": "arkos dev",
+    "start": "arkos start",
+    "build": "arkos build",
+    "arkos": "arkos"
+    // other scripts
+  }
+}
+```
+
+With these scripts configured, you can run the commands using npm or yarn:
+
+- `npm run dev` or `pnpm dev` - Start the development server
+- `npm run build` or `pnpm build` - Build your project for production
+- `npm start` or `pnpm start` - Run the production server
+- `npm run arkos` or `pnpm arkos` - Run custom Arkos CLI commands
+
+You can also pass additional parameters to these commands:
+
+```bash
+# Start dev server on custom port
+npm run dev -p 3050
+
+# Build with ESM modules
+npm run build -m esm
+
+# Start production server with specific host
+npm start -h 0.0.0.0
+```
 
 ## Best Practices
 

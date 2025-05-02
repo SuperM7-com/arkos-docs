@@ -277,8 +277,9 @@ In order to do this you must export a `modelNamePrismaQueryOptions` under `src/m
 // src/modules/user/user.prisma-query-options.ts
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
+import { prisma } from "../../utils/prisma";
 
-const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
+const userPrismaQueryOptions: PrismaQueryOptions<typeof prisma.user> = {
   queryOptions: {
     // Used to manage custom prisma query options across all operations
     include: {

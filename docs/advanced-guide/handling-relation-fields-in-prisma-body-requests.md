@@ -32,42 +32,42 @@ The `handleRelationFieldsInBody` is only used internally by **Arkos** and not ex
   "images": [
     { "url": "image1.jpg", "isPrimary": true },
     { "id": 123, "isPrimary": false, "altText": "Updated alt text" },
-    { "id": 456, "apiAction": "delete" }
+    { "id": 456, "apiAction": "Delete" }
   ]
 }
 ```
 
 ### Output (for Prisma)
 
-```javascript
+```ts
 {
-  "name": "New Product",
-  "price": 29.99,
-  "description": "A fantastic product",
-  "category": {
-    "connect": { "id": 5 }
+  name: "New Product",
+  price: 29.99,
+  description: "A fantastic product",
+  category: {
+    connect: { id: 5 }
   },
-  "attributes": {
-    "create": [
-      { "name": "Color", "value": "Red" },
-      { "name": "Size", "value": "Medium" }
+  attributes: {
+    create: [
+      { name: "Color", value: "Red" },
+      { name: "Size", value: "Medium" }
     ]
   },
-  "tags": {
-    "connect": [
-      { "id": 1 },
-      { "id": 2 }
+  tags: {
+    connect: [
+      { id: 1 },
+      { id: 2 }
     ]
   },
-  "images": {
-    "create": [
-      { "url": "image1.jpg", "isPrimary": true }
+  images: {
+    create: [
+      { url: "image1.jpg", isPrimary: true }
     ],
-    "update": [
-      { "where": { "id": 123 }, "data": { "isPrimary": false, "altText": "Updated alt text" } }
+    update: [
+      { where: { id: 123 }, data: { isPrimary: false, altText: "Updated alt text" } }
     ],
-    "deleteMany": {
-      "id": { "in": [456] }
+    deleteMany: {
+      id: { in: [456] }
     }
   }
 }
@@ -163,7 +163,7 @@ The utility `handleRelationFieldsInBody` function examines the structure of each
 | `{ "fieldName": { "email": "user@example.com" } }`        | `{ "fieldName": { "connect": { "email": "user@example.com" } } }`                        | email must be defined as @unique on your schema or it will be marked as data to create instead.                     |
 | `{ "fieldName": { "name": "New Item" } }`                 | `{ "fieldName": { "create": { "name": "New Item" } } } `                                 | name must NOT be @unique otherwise **Arkos** will try to connect with this.                                         |
 | `{ "fieldName": { "id": 5, "name": "Updated" } }`         | `{ "fieldName": { "update": { "where": {"id": 5 },  "data": { "name": "Updated" } } } }` | you could pass also pass another @unique field instead of id and **Arkos** will try to update with it.              |
-| `{ "fieldName": { "id": 5, "apiAction": "delete" } }`     | `{ "fieldName": { "delete" : { "where" : { "id" : 5 } } } }` or deleteMany for arrays    | It can also be done through a @unique field and the apiAction to delete in order to delete the nested data.         |
+| `{ "fieldName": { "id": 5, "apiAction": "Delete" } }`     | `{ "fieldName": { "Delete" : { "where" : { "id" : 5 } } } }` or deleteMany for arrays    | It can also be done through a @unique field and the apiAction to delete in order to delete the nested data.         |
 | `{ "fieldName": { "id": 5, "apiAction": "disconnect" } }` | `{ "fieldName": { "disconnect": { "where" : { "id": 5 } } } }`                           | It can also be done through a @unique field and the apiAction to disconnect in order to disconnect the nested data. |
 
 :::warning important
@@ -214,7 +214,7 @@ By default when you want to update nested relation fields **Arkos** will automat
   "comments": [
     { "id": 1, "text": "Updated comment" },
     { "content": "New comment" },
-    { "id": 3, "apiAction": "delete" }
+    { "id": 3, "apiAction": "Delete" }
   ]
 }
 
@@ -286,6 +286,7 @@ You can include an `apiAction` property to explicitly specify the operation:
 
 Valid `apiAction` values:
 
+- `"create"`: Force create operation
 - `"connect"`: Force connect operation even with additional fields
 - `"update"`: Explicitly mark for update
 - `"delete"`: Remove relation (uses `deleteMany` for arrays automatically)

@@ -61,7 +61,7 @@ The following interceptors are available for intercept authentication related re
 
 The **Arkos** auth router implements a sophisticated conditional middleware execution flow:
 
-1. Before anything incoming data is validated through DTO's or schemas according to you configs, see [Authentication Data Validation Guide](/docs/authentication-system/authentication-data-validation) to understand.
+1. Before anything incoming data is validated through DTO's or schemas according to you configs, see [Authentication Data Validation Guide](/docs/guide/authentication-system/authentication-data-validation) to understand.
 2. Arkos checks if a `before` middleware exists:
    - If it exists, it runs before the controller action
    - If not, the controller action runs immediately

@@ -187,10 +187,10 @@ arkos.init({
 });
 ```
 
-By default, passwords must contain at least one uppercase letter, one lowercase letter, and one digit. [read more](/docs/authentication-system/authentication-data-validation) about authentication data validation.
+By default, passwords must contain at least one uppercase letter, one lowercase letter, and one digit. [read more](/docs/guide/authentication-system/authentication-data-validation) about authentication data validation.
 
 :::warning important
-This will have no effect you if a `create-user` or `update-user` dto's or schemas are defined. and also for authentication dto's or schemas like `login`, `signup`, `update-password` are defined, read more about **authencation data validation** [clicking here](/docs/authentication-system/authentication-data-validation).
+This will have no effect you if a `create-user` or `update-user` dto's or schemas are defined. and also for authentication dto's or schemas like `login`, `signup`, `update-password` are defined, read more about **authencation data validation** [clicking here](/docs/guide/authentication-system/authentication-data-validation).
 :::
 
 ## Best Practices

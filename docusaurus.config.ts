@@ -40,8 +40,8 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
 
-          editUrl:
-            "https://github.com/supmer7/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          // editUrl:
+          //   "https://github.com/supmer7/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
         },
         blog: {
           showReadingTime: true,
@@ -50,8 +50,7 @@ const config: Config = {
             xslt: true,
           },
 
-          editUrl:
-            "https://github.com/supmer7/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
+          editUrl: "https://github.com/supmer7-com/arkos-docs/blog",
           onInlineTags: "warn",
           onInlineAuthors: "warn",
           onUntruncatedBlogPosts: "warn",

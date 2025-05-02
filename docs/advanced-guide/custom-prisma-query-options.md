@@ -31,9 +31,10 @@ Arkos supports customizing options for all standard Prisma operations:
 
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
+import { prisma } from "../../utils/prisma";
 
-const authorPrismaQueryOptions: PrismaQueryOptions<Prisma.ModelDelegate> = {
-  // Global options applied to all operations
+const authorPrismaQueryOptions: PrismaQueryOptions<typeof prisma.author> = {
+  // Global options applied to all operations (params are the same as findMany)
   queryOptions: { ... },
 
   // Operation-specific options
@@ -59,23 +60,23 @@ Is very important to follow the file name conventions and folder structure state
 The `PrismaQueryOptions` type supports all standard Prisma query parameters:
 
 ```typescript
-type PrismaQueryOptions<T> = {
+type PrismaQueryOptions<T extends Record<string, any>> = {
   // Global options applied to all operations
-  queryOptions?: Prisma.Args<T, "findMany">;
+  queryOptions?: Partial<Parameters<T["findMany"]>[0]>;
 
   // Read operations
-  findOne?: Partial<Prisma.Args<T, "findUnique">>;
-  findMany?: Partial<Prisma.Args<T, "findMany">>;
+  findOne?: Partial<Parameters<T["findFirst"]>[0]>;
+  findMany?: Partial<Parameters<T["findMany"]>[0]>;
 
   // Write operations
-  createOne?: Partial<Prisma.Args<T, "create">>;
-  updateOne?: Partial<Prisma.Args<T, "update">>;
-  deleteOne?: Partial<Prisma.Args<T, "delete">>;
+  createOne?: Partial<Parameters<T["Create"]>[0]>;
+  updateOne?: Partial<Parameters<T["Update"]>[0]>;
+  deleteOne?: Partial<Parameters<T["Delete"]>[0]>;
 
   // Bulk operations
-  createMany?: Partial<Prisma.Args<T, "createMany">>;
-  updateMany?: Partial<Prisma.Args<T, "updateMany">>;
-  deleteMany?: Partial<Prisma.Args<T, "deleteMany">>;
+  deleteMany?: Partial<Parameters<T["deleteMany"]>[0]>;
+  updateMany?: Partial<Parameters<T["updateMany"]>[0]>;
+  createMany?: Partial<Parameters<T["createMany"]>[0]>;
 };
 ```
 
@@ -112,7 +113,7 @@ Options are intelligently merged at each level, with object properties being dee
 Request query parameters always take precedence over configured defaults, allowing API consumers to override your defaults when needed, as mentioned they are deep-merged rather than replaced.
 :::
 
-You can read more about how **Arkos** allows developers to handle request query parameters [clicking here](/docs/request-query-parameters)
+You can read more about how **Arkos** allows developers to handle request query parameters [clicking here](/docs/guide/request-query-parameters)
 
 ## Usage Examples
 
@@ -122,8 +123,9 @@ You can read more about how **Arkos** allows developers to handle request query 
 // src/modules/user/user.prisma-query-options.ts
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
+import { prisma } from "../../utils/prisma";
 
-const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
+const userPrismaQueryOptions: PrismaQueryOptions<typeof prisma.user> = {
   queryOptions: {
     select: {
       id: true,
@@ -148,8 +150,9 @@ export default userPrismaQueryOptions;
 // src/modules/post/post.prisma-query-options.ts
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
+import { prisma } from "../../utils/prisma";
 
-const postPrismaQueryOptions: PrismaQueryOptions<Prisma.PostDelegate> = {
+const postPrismaQueryOptions: PrismaQueryOptions<typeof prisma.post> = {
   // Global defaults for all operations
   queryOptions: {
     where: {
@@ -233,8 +236,9 @@ export default postPrismaQueryOptions;
 // src/modules/user/user.prisma-query-options.ts
 import { Prisma } from "@prisma/client";
 import { PrismaQueryOptions } from "arkos/prisma";
+import { prisma } from "../../utils/prisma";
 
-const userPrismaQueryOptions: PrismaQueryOptions<Prisma.UserDelegate> = {
+const userPrismaQueryOptions: PrismaQueryOptions<typeof prisma.user> = {
   queryOptions: {
     // Base configuration for all operations
     select: {

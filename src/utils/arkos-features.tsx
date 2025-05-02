@@ -34,7 +34,7 @@ export const arkosFeatures = [
     icon: <Layers className="md:size-24 size-20 text-yellow-500" />,
     outline: "hover:outline-yellow-500/50",
     titleHover: "group-hover:text-yellow-500/80",
-    to: "/docs/built-in-middlewares",
+    to: "/docs/guide/built-in-middlewares",
   },
   {
     title: "Built-in Data Validation",

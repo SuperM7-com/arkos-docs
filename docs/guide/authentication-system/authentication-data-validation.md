@@ -129,7 +129,7 @@ export default class UpdateMeDto {
 ```
 
 :::warning
-This endpoint must not be used to update password, by default **Arkos** will throw an error if password is sent to this endpoint even though your DTO or schema have listed the password field, in order to update the current user password [see here](/docs/authentication-system/authentication-data-validation#update-password-validation).
+This endpoint must not be used to update password, by default **Arkos** will throw an error if password is sent to this endpoint even though your DTO or schema have listed the password field, in order to update the current user password [see here](/docs/guide/authentication-system/authentication-data-validation#update-password-validation).
 :::
 
 ## 2. Zod Approach
@@ -216,7 +216,7 @@ export default UpdateMeSchema;
 ```
 
 :::warning
-This endpoint must not be used to update password, by default **Arkos** will throw an error if password is sent to this endpoint even though your DTO or schema have listed the password field, in order to update the current user password [see here](/docs/authentication-system/authentication-data-validation#update-password-validation).
+This endpoint must not be used to update password, by default **Arkos** will throw an error if password is sent to this endpoint even though your DTO or schema have listed the password field, in order to update the current user password [see here](/docs/guide/authentication-system/authentication-data-validation#update-password-validation).
 :::
 
 ## Custom Middleware Validation
@@ -278,6 +278,6 @@ When validation fails, **Arkos** returns a structured error response:
 2. Use strong password requirements
 3. Keep validation rules consistent between your DTOs/schemas and your API documentation
 4. Add custom validation middleware for complex business rules
-5. Use rate limiting to prevent brute force attacks, [see more here](/docs/authentication-system/sending-authentication-requests#rate-limiting).
+5. Use rate limiting to prevent brute force attacks, [see more here](/docs/guide/authentication-system/sending-authentication-requests#rate-limiting).
 
 By following these validation practices, you can ensure that your **Arkos** application remains secure and reliable.

@@ -14,8 +14,9 @@ import TabItem from '@theme/TabItem';
 
 - **Database-Driven Permissions**: Unlike Static RBAC, permissions are stored in the database and can be modified at runtime without code changes.
 - **Required Models**: The system uses dedicated models (`AuthRole`, `AuthPermission`, `UserRole`) to manage roles and permissions.
-- **Resource-Action Control**: Permissions are defined as combinations of resources (models) and actions (view, create, update, delete).
+- **Resource-Action Control**: Permissions are defined as combinations of resources (models) and actions (View, Create, Update, Delete, or custom actions).
 - **Model-Specific Public Routes**: You can still configure which routes are public using auth config files as Static Authentication, but role-based access is managed in the database.
+- **Custom Actions**: Beyond standard CRUD operations, you can define custom actions in your permission model for use in custom routes and controllers.
 
 ## How It Works
 
@@ -103,16 +104,24 @@ model AuthRole {
 
 // This enum options must be in lower-case as Arkos expects
 enum AuthPermissionAction {
-  view
-  create
-  update
-  delete
+  View
+  Create
+  Update
+  Delete
+  GenerateReport // custom action
 }
+// You increase this to add more and more actions
+// according to your application:
+// e.g. GenerateReport, DownloadReport it is up to you
 
 model AuthPermission {
   id        String               @id @default(uuid())
-  resource  String               // Database models name in kebab-case
-  action    AuthPermissionAction @default(view) // When using sqlite, this can be a plain String
+
+  // any resource name to be protected
+  // for built-in prisma models api endpoints must be
+  // modal name Database models name in kebab-case
+  resource  String
+  action    AuthPermissionAction @default(View) // When using sqlite, this can be a plain String
   roleId    String
   role      AuthRole @relation(fields: [roleId], references: [id])
 
@@ -137,16 +146,22 @@ model User {
   lastLoginAt        DateTime?
   isSuperUser        Boolean   @default(false)
   isStaff            Boolean   @default(false)
-  deletedSelfAccounAt DateTime?
+  deletedSelfAccountAt DateTime?
   isActive           Boolean   @default(true)
   roles              UserRole[] // Association with roles through UserRole model
   // other fields for your application
 }
 ```
 
-:::tip
-You can add fields like `createdAt`, `updatedAt`, `updatedAt` and other fields all according to your application requirements. For fields that are not required by **Arkos** you can interact through the interceptor middlewares. see [Authentication Interceptor Middlewares](/docs/authentication-system/authentication-interceptor-middlewares) and see [General Interceptor Middlewares](/docs/core-concepts/interceptor-middlewares).
+:::info
+You can add fields like `createdAt`, `updatedAt`, `updatedAt` and other fields all according to your application requirements. For fields that are not required by **Arkos** you can interact through the interceptor middlewares. see [Authentication Interceptor Middlewares](/docs/guide/authentication-system/authentication-interceptor-middlewares) and see [General Interceptor Middlewares](/docs/core-concepts/interceptor-middlewares).
 :::
+
+:::tip
+You can add more actions on the `AuthPermissionAction` enum if you wish to use this also in your own custom routers, for example protect the routes to generate reports or something of your own application business logic.
+:::
+
+Notice that even though **Arkos** uses this by default to control the access of the auto generated api endpoints you can use it on your own routes through the `authService.handleAccessControl` in order to leverage the `Arkos Dynamic Authentication` in your own custom api endpoints, see [Adding Authentication In Custom Routes](/docs/guide/adding-custom-routers#adding-authentication-in-custom-routers).
 
 ### Managing Authentication For AuthRole, AuthPermission, UserRole
 
@@ -163,8 +178,8 @@ Treat them as normal prisma models although these are used for authentication by
 #### `AuthPermission`
 
 - Defines what actions can be performed on specific resources
-- `resource`: Corresponds to your Prisma model names in kebab-case (e.g., `user`, `blog-post`)
-- `action`: Must be one of the lowercase values: `view`, `create`, `update`, `delete`
+- `resource`: Corresponds to your Prisma model names in kebab-case (e.g., `user`, `blog-post`) or any other resource you would like to protect.
+- `action`: Must be one of the PascalCase values: `View`, `Create`, `Update`, `Delete` for your prisma models or any other action you want to your own added routers.
 - Special resource `file-upload` is available for file upload permission control (see [File Uploads Authentication](/docs/advanced-guide/file-uploads-authentication))
 
 #### `UserRole`
@@ -172,6 +187,7 @@ Treat them as normal prisma models although these are used for authentication by
 - Junction table connecting users to roles (many-to-many relationship)
 - Allows a user to have multiple roles or you can change to be only one
 - Allows roles to be assigned to multiple users
+- You can add for example the attributedBy field to track who attribute a given role to whom.
 
 #### `User`
 
@@ -207,7 +223,7 @@ arkos.init({
 });
 ```
 
-Dive deep about allowed username fields and also see how to login with nested fields from user model on this guide [Example Changing The Username Field Guide](/docs/authentication-system/sending-authentication-requests#example-changing-the-username-field).
+Dive deep about allowed username fields and also see how to login with nested fields from user model on this guide [Example Changing The Username Field Guide](/docs/guide/authentication-system/sending-authentication-requests#example-changing-the-username-field).
 
 #### `password: String`
 
@@ -232,7 +248,7 @@ Dive deep about allowed username fields and also see how to login with nested fi
 - Indicates users who can access admin areas in your frontend
 - Does not directly affect backend permissions (just recommended)
 
-#### `deletedSelfAccounAt: DateTime?`
+#### `deletedSelfAccountAt: DateTime?`
 
 - Tracks if/when a user has voluntarily deleted their account
 - Supports soft deletion functionality
@@ -255,10 +271,11 @@ import { AuthConfigs } from "arkos/auth";
 
 const postAuthConfigs: AuthConfigs = {
   authenticationControl: {
-    view: false, // Public endpoint: no authentication required to view
-    create: true, // Authentication required to create (default behavior)
-    update: true, // Authentication required to update (default behavior)
-    delete: true, // Authentication required to delete (default behavior)
+    View: false, // Public endpoint: no authentication required to View
+    Create: true, // Authentication required to Create (default behavior)
+    Update: true, // Authentication required to Update (default behavior)
+    Delete: true, // Authentication required to Delete (default behavior)
+    ExportReport: true, // Custom action requiring authentication
   },
   // accessControl is not used in dynamic mode since permissions are in the database
 };
@@ -273,10 +290,11 @@ export default postAuthConfigs;
 // src/modules/post/post.auth-configs.js
 const postAuthConfigs = {
   authenticationControl: {
-    view: false, // Public endpoint: no authentication required to view
-    create: true, // Authentication required to create (default behavior)
-    update: true, // Authentication required to update (default behavior)
-    delete: true, // Authentication required to delete (default behavior)
+    View: false, // Public endpoint: no authentication required to View
+    Create: true, // Authentication required to Create (default behavior)
+    Update: true, // Authentication required to Update (default behavior)
+    Delete: true, // Authentication required to Delete (default behavior)
+    ExportReport: true, // Custom action requiring authentication
   },
   // accessControl is not used in dynamic mode since permissions are in the database
 };
@@ -291,6 +309,38 @@ module.exports = postAuthConfigs;
 
 - **✅ authenticationControl**: Determines which actions require authentication. Setting an action to `false` makes it publicly accessible.
 - **❌ accessControl**: Not used in Dynamic RBAC mode as permissions are managed in the database.
+
+## Implementing Custom Actions in Custom Routers
+
+Similar to Static RBAC, you can define custom actions beyond the standard CRUD operations in your Dynamic RBAC system. However, with Dynamic RBAC, these permissions are stored in the database rather than in configuration files.
+
+```ts
+// src/modules/post/post.custom-routes.ts
+import { Router } from "express";
+import { authService } from "arkos/services";
+import { catchAsync } from "arkos/error-handler";
+
+const router = Router();
+
+// Export posts endpoint with custom action authentication
+router.get(
+  "/api/posts/export-report",
+  authService.authenticate, // First authenticate the user
+  // Note: handleAccessControl receives the action, resource, and roles directly
+  authService.handleAccessControl(
+    "ExportReport", // The custom action name
+    "post", // The model/resource name
+    [] // Empty array as permissions are checked from the database in dynamic mode
+  ),
+  exportReportController
+);
+
+export default router;
+```
+
+> **Important**: When using `handleAccessControl` with Dynamic RBAC, you pass the action and resource names, but the roles array can be empty since permissions are retrieved from the database. The function receives the values directly, not wrapped in an object.
+
+For more detailed information on implementing authentication in custom routers, see the guide on [Adding Authentication to Custom Routers](/docs/guide/adding-custom-routers#adding-authentication-in-custom-routers).
 
 ## Checking Available Resources
 
@@ -309,6 +359,7 @@ This endpoint returns a list of all resources (model names) available in your ap
 - **Centralized Management**: All permissions are stored in one place (the database)
 - **UI Integration**: Build admin interfaces to manage roles and permissions
 - **Scalability**: Well-suited for large applications with complex permission needs
+- **Custom Actions Support**: Define application-specific actions beyond standard CRUD operations
 
 ## When to Use Dynamic RBAC:
 
@@ -318,6 +369,7 @@ Dynamic RBAC is ideal for:
 - Systems where non-developers need to manage permissions
 - Applications where new resources are frequently added
 - Multi-tenant systems with custom role configurations
+- Applications requiring custom actions specific to business processes
 
 ## Future Enhancements
 
@@ -326,4 +378,4 @@ In upcoming releases, Arkos will support:
 - **Row-Level Policies**: Define permissions at the database row level (e.g., authors can only edit their own posts)
 - **Advanced Permission Rules**: Create more complex permission logic beyond basic CRUD operations
 
-Now you can start sending requests to the authentication endpoints. Read [Sending Authentication Requests Guide](/docs/authentication-system/sending-authentication-requests) to learn more.
+Now you can start sending requests to the authentication endpoints. Read [Sending Authentication Requests Guide](/docs/guide/authentication-system/sending-authentication-requests) to learn more.

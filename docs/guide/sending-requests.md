@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 1
 ---
 
 # Sending Requests
@@ -42,7 +42,7 @@ GET /api/posts
 }
 ```
 
-> **Note:** For detailed information about request query parameters, filtering, sorting, and pagination options, please refer to the [Advanced Guide: Request Query Parameters](/docs/request-query-parameters).
+> **Note:** For detailed information about request query parameters, filtering, sorting, and pagination options, please refer to the [Advanced Guide: Request Query Parameters](/docs/guide/request-query-parameters).
 
 ### Get a Single Post
 

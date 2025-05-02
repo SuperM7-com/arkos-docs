@@ -73,7 +73,7 @@ class BaseService {
     const bodyWithRelationFieldsHandled = handleRelationFieldsInBody(
       body,
       { ...this.relationFields },
-      ["delete", "disconnect", "update"]
+      ["Delete", "disconnect", "Update"]
     );
 
     // Execute Prisma query with all options merged
@@ -131,7 +131,7 @@ class BaseController {
 - **Pagination** - with limit of results also.
 - **Fields Selection**
 
-The `APIFeatures` class is an internal utility designed by in **Arkos** to parse and transform query parameters from an incoming HTTP request into a structured Prisma query object. This allows the developer to dynamically apply filters, sorting, pagination, field selection, and search functionality when querying the database. To more details and advanced concepts about query parameters handling with arkos [see more](/docs/request-query-parameters).
+The `APIFeatures` class is an internal utility designed by in **Arkos** to parse and transform query parameters from an incoming HTTP request into a structured Prisma query object. This allows the developer to dynamically apply filters, sorting, pagination, field selection, and search functionality when querying the database. To more details and advanced concepts about query parameters handling with arkos [see more](/docs/guide/request-query-parameters).
 
 ### Example Request Query Handling
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 10
+sidebar_position: 6
 ---
 
 # Accessing The Express App
@@ -54,7 +54,7 @@ The `configureApp` function runs before any Arkos middleware is applied, giving 
 You do not need to call `app.listen` inside `configureApp` because this is function that gives you acess to add custom configurations beyond **Arkos** features on the top-level of the middleware/configuration stack. In the end everything will go down until **Arkos** call `app.listen`.
 :::
 
-As mentioned on the warning above, is not recommended to call `app.listen` inside `configureApp`. If you would like to call `app.listen` on your own, for example to add websockets see [Calling app.listen By Yourself Section](/docs/accessing-the-express-app#calling-applisten-by-yourself)
+As mentioned on the warning above, is not recommended to call `app.listen` inside `configureApp`. If you would like to call `app.listen` on your own, for example to add websockets see [Calling app.listen By Yourself Section](/docs/guide/accessing-the-express-app#calling-applisten-by-yourself)
 
 ### 2. Through the Arkos Instance
 

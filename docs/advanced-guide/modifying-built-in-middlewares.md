@@ -270,4 +270,4 @@ arkos.init({
 
 Arkos provides a flexible middleware system that allows you to customize how HTTP requests are processed. By understanding how to disable, replace, or add middlewares, you can tailor the framework to your specific requirements while maintaining the core functionality that makes Arkos powerful.
 
-For additional information on built-in middlewares, refer to the [Built-in Middlewares Guide](/docs/built-in-middlewares) in detail.
+For additional information on built-in middlewares, refer to the [Built-in Middlewares Guide](/docs/guide/built-in-middlewares) in detail.

@@ -78,7 +78,7 @@ Provides authentication endpoints for user management.
 
 **Learn More:**
 
-- [Authentication Guide](/docs/authentication-system/sending-authentication-requests#authentication-endpoints)
+- [Authentication Guide](/docs/guide/authentication-system/sending-authentication-requests#authentication-endpoints)
 
 ## Prisma Models Router
 
@@ -108,7 +108,7 @@ Automatically generates RESTful API endpoints for all your Prisma models.
 **Learn More:**
 
 - [Endpoints Auto-Generation](/docs/core-concepts/endpoints-auto-generation)
-- [Sending Requests](/docs/sending-requests)
+- [Sending Requests](/docs/guide/sending-requests)
 
 ## Available Resources & Routes Router
 
@@ -168,9 +168,11 @@ arkos.init({
 });
 ```
 
+see full guide about [Adding Custom Routers In Arkos](/docs/guide/adding-custom-routers)
+
 ## Recommended Readings
 
 - [Customizing Prisma Models Routers](/docs/advanced-guide/customizing-prisma-models-routers)
-- [Built-in Middlewares](/docs/built-in-middlewares)
+- [Built-in Middlewares](/docs/guide/built-in-middlewares)
 - [Authentication System](/docs/core-concepts/built-in-authentication-system)
 - [File Upload Guide](/docs/core-concepts/file-uploads)
