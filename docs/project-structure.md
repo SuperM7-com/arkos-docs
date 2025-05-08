@@ -198,26 +198,106 @@ Note that `.local` files are typically excluded from version control and are mea
 
 ## .gitignore file
 
-Below is a part of a recommended `.gitignore` configuration for your **Arkos** project that covers common files and directories that should be excluded from version control:
+Below is a comprehensive `.gitignore` configuration for your **Arkos** project that covers common files and directories that should be excluded from version control:
 
 ```
 # Dependencies
 /node_modules
+/.pnp
+.pnp.js
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+.npm
 
 # Environment files
 .env
 .env.local
 .env.*.local
 .env.development
+.env.test
+.env.production
+*.env
 
-# Build output dir
+# Build and output directories
 /build
+/dist
+/out
+/.build
+/coverage
+/.nyc_output
+
+# TypeScript cache and declaration files
+*.tsbuildinfo
+/src/**/*.js.map
+/src/**/*.d.ts
+/types/generated/*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE and editor directories
+/.idea
+/.vscode
+*.swp
+*.swo
+.DS_Store
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Testing
+/coverage
+/.nyc_output
+/cypress/screenshots
+/cypress/videos
+/.jest-cache
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.eslintcache
+.stylelintcache
+
+# Misc
+.serverless/
+.fusebox/
+.dynamodb/
+.webpack/
+.next/
+.nuxt/
+.cache/
+.docz/
+.vercel
 ```
 
-This configuration excludes dependency directories, environment files with potential secrets, fill free to add your own patterns here.
+This `.gitignore` includes:
+
+1. **Dependencies**: Excludes all package manager related files and directories.
+2. **Environment Files**: Ignores all environment files that might contain sensitive information.
+3. **Build Directories**: Ignores all common output directories (`/build` for **Arkos**).
+4. **TypeScript**: Ignores TypeScript compiler output and cache files.
+5. **Logs**: Excludes various types of log files.
+6. **IDE/Editor**: Ignores configuration files for common development environments.
+7. **OS Files**: Ignores operating system generated files.
+8. **Testing**: Excludes test coverage reports and artifacts.
+9. **Temporary Files**: Ignores various temporary files created during development.
+10. **Misc**: Excludes various framework-specific build directories.
+
+Feel free to customize this configuration based on your specific project needs. You can remove sections that aren't relevant to your development workflow or add additional patterns for project-specific files that shouldn't be committed to version control.
 
 # Package.json Scripts
 

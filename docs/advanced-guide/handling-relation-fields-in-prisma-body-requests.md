@@ -116,7 +116,7 @@ Here **Arkos** will not handle the connection of the sub category to the categor
 // connected to a existing category with id 3
 ```
 
-You read more about nested fields operations on Prisma Official documenation [clicking here](https://www.prisma.io/docs/orm/prisma-client/queries/relation-queries#nested-writes).
+You can read more about nested fields operations on Prisma Official documenation [clicking here](https://www.prisma.io/docs/orm/prisma-client/queries/relation-queries#nested-writes).
 
 ### ✅ Arkos Will Handle Nested Fields For subCategory Automatically
 
@@ -151,20 +151,44 @@ Here **Arkos** will scan the nested fields on subCategory to handle this for you
 // connected to a existing category with id 3
 ```
 
----
-
 ## How Operations Are Determined
 
 The utility `handleRelationFieldsInBody` function examines the structure of each relation field to determine the appropriate Prisma operation:
 
-| JSON Structure                                            | Resulting Prisma Operation                                                               | Observation                                                                                                         |
-| --------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `{ "fieldName": { "id": 5 } }`                            | `{ "fieldName": { "connect": { "id": 5 } } }`                                            | You can also pass a @unique field in order to connect.                                                              |
-| `{ "fieldName": { "email": "user@example.com" } }`        | `{ "fieldName": { "connect": { "email": "user@example.com" } } }`                        | email must be defined as @unique on your schema or it will be marked as data to create instead.                     |
-| `{ "fieldName": { "name": "New Item" } }`                 | `{ "fieldName": { "create": { "name": "New Item" } } } `                                 | name must NOT be @unique otherwise **Arkos** will try to connect with this.                                         |
-| `{ "fieldName": { "id": 5, "name": "Updated" } }`         | `{ "fieldName": { "update": { "where": {"id": 5 },  "data": { "name": "Updated" } } } }` | you could pass also pass another @unique field instead of id and **Arkos** will try to update with it.              |
-| `{ "fieldName": { "id": 5, "apiAction": "Delete" } }`     | `{ "fieldName": { "Delete" : { "where" : { "id" : 5 } } } }` or deleteMany for arrays    | It can also be done through a @unique field and the apiAction to delete in order to delete the nested data.         |
-| `{ "fieldName": { "id": 5, "apiAction": "disconnect" } }` | `{ "fieldName": { "disconnect": { "where" : { "id": 5 } } } }`                           | It can also be done through a @unique field and the apiAction to disconnect in order to disconnect the nested data. |
+1. **Connect Operation**
+
+   - Input: `{ "fieldName": { "id": 5 } }`
+   - Result: `{ fieldName: { connect: { id: 5 } } }`
+   - Note: Works with any @unique field for connecting.
+
+2. **Connect with Unique Field**
+
+   - Input: `{ "fieldName": { "email": "user@example.com" } }`
+   - Result: `{ fieldName: { connect: { email: "user@example.com" } } }`
+   - Note: Field must be defined as @unique in schema.
+
+3. **Create Operation**
+
+   - Input: `{ "fieldName": { "name": "New Item" } }`
+   - Result: `{ fieldName: { create: { name: "New Item" } } }`
+   - Note: Field must NOT be @unique or Arkos will try to connect instead.
+
+4. **Update Operation**
+
+   - Input: `{ "fieldName": { "id": 5, "name": "Updated" } }`
+   - Result: `{ fieldName: { update: { where: {id: 5}, data: { name: "Updated" } } } }`
+   - Note: Can use any @unique field instead of id.
+
+5. **Delete Operation**
+
+   - Input: `{ "fieldName": { "id": 5, "apiAction": "Delete" } }`
+   - Result: `{ fieldName: { `Delete`: { where: { id: 5 } } } }` (or deleteMany for arrays)
+   - Note: Can use any @unique field with `"apiAction": "Delete"`.
+
+6. **Disconnect Operation**
+   - Input: `{ "fieldName": { "id": 5, "apiAction": "disconnect" } }`
+   - Result: `{ fieldName: { `disconnect`: { where: { id: 5 } } } }`
+   - Note: Can use any @unique field with `"apiAction": "disconnect"`.
 
 :::warning important
 Bear in mind that to connect you can use any field that is @unique under your model schema or otherwise **Arkos** will try to create by default.
@@ -294,29 +318,46 @@ Valid `apiAction` values:
 
 ## Integration with Arkos
 
-This utility is automatically integrated into Arkos' base controllers. If you're using the framework's default controllers, the relation handling happens automatically:
+This utility is automatically integrated into Arkos' base services. If you're using the framework's default base services methods, the relation handling happens automatically:
 
-```typescript
-import { BaseController } from "arkos/controllers";
+:::warning
+The following code snippet is just a mere example of something done by **Arkos** behind the scenes on the auto generated api endpoints for your prisma models.
+:::
+
+```ts
+import { BaseService } from "arkos/services";
+import { BaseController } from "arkos";
 
 export class ProductController extends BaseController {
+  private productService: BaseService;
+
   constructor() {
-    super("product"); // Automatically handles relations for Product model
+    this.service = new BaseService("product"); // Automatically handles relations for Product model
   }
 
-  // Custom methods can use the utility directly
-  async createBundle(req, res) {
-    const bundleData = handleRelationFieldsInBody(
-      req.body,
-      getPrismaModelRelations("ProductBundle")
-    );
+  // Create a product with relations
+  async createProduct(req, res) {
+    try {
+      // BaseService.createOne already uses handleRelationFieldsInBody internally
+      const product = await this.service.createOne(req.body);
+      res.status(201).json({ data: product });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
 
-    // Use processed data with Prisma
-    const bundle = await this.prisma.productBundle.create({
-      data: bundleData,
-    });
-
-    res.status(201).json({ data: bundle });
+  // Update a product with relations
+  async updateProduct(req, res) {
+    try {
+      // BaseService.updateOne also uses handleRelationFieldsInBody internally
+      const product = await this.service.updateOne(
+        { id: parseInt(req.params.id) },
+        req.body
+      );
+      res.status(200).json({ data: product });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 }
 ```

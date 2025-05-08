@@ -103,7 +103,7 @@ Automatically generates RESTful API endpoints for all your Prisma models.
 **Customization:**
 
 - Can be disabled or replaced with your own implementation
-- See [Customizing Prisma Models Routers Guide](/docs/advanced-guide/customizing-prisma-models-routers)
+- See [Customizing Prisma Models Routers Guide](/docs/guide/adding-custom-routers#2-customizing-prisma-model-routers)
 
 **Learn More:**
 
@@ -149,7 +149,7 @@ arkos.init({
 });
 ```
 
-See [Customizing Prisma Models Routers](/docs/advanced-guide/customizing-prisma-models-routers) to learn how to customize without disabling or replacing the prisma models routers.
+See [Customizing Prisma Models Routers](/docs/guide/adding-custom-routers#2-customizing-prisma-model-routers) to learn how to customize without disabling or replacing the prisma models routers.
 
 ## Adding Custom Routers
 
@@ -172,7 +172,7 @@ see full guide about [Adding Custom Routers In Arkos](/docs/guide/adding-custom-
 
 ## Recommended Readings
 
-- [Customizing Prisma Models Routers](/docs/advanced-guide/customizing-prisma-models-routers)
+- [Customizing Prisma Models Routers](/docs/guide/adding-custom-routers#2-customizing-prisma-model-routers)
 - [Built-in Middlewares](/docs/guide/built-in-middlewares)
 - [Authentication System](/docs/core-concepts/built-in-authentication-system)
 - [File Upload Guide](/docs/core-concepts/file-uploads)

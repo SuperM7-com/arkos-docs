@@ -185,7 +185,7 @@ Returns a list of all available resource endpoints based on the application's mo
 #### Creating a Controller for a Specific Model
 
 ```ts
-// src/modules/posts/post.controller.ts
+// src/modules/user/user.controller.ts
 import {
   ArkosRequest,
   ArkosResponse,
@@ -205,11 +205,12 @@ class UserController extends BaseController {
         res: ArkosResponse,
         next: ArkosNextFunction
       ) => {
-        // this.baseService is made available on `BaseController`
-        const data = await this.baseService.createOne(
-          req.body,
-          req.query?.prismaQueryOptions as string
-        );
+        // this.service is made available on `BaseController`
+        const data = await this.service.createOne(req.body, {
+          include: {
+            password: false,
+          },
+        });
 
         res.status(201).json({ data });
       }

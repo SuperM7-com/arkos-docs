@@ -216,8 +216,8 @@ arkos.init({
   authentication: {
     mode: "dynamic",
     login: {
-      allowedUsernames: ["email"],
-    }, // Use email field for authentication
+      allowedUsernames: ["email", "phones.some.number"],
+    }, // Use email, some phones number field for authentication
     // other configs
   },
 });

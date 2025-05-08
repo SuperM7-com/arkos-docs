@@ -4,27 +4,27 @@ sidebar_position: 4
 
 # Adding Custom Routers
 
-Arkos provides powerful built-in routers that handle common API functionalities, but there are often cases when you need to create custom routers for specific business logic or unique features. This guide walks you through creating and implementing custom routers in your Arkos application.
+Arkos provides a powerful routing system with two main approaches:
 
-## Introduction
+1. **Custom Routers**: For creating entirely new endpoints separate from your Prisma models
+2. **Customizing Prisma Model Routers**: For extending or modifying the auto-generated endpoints for your Prisma models
 
-Custom routers in Arkos allow you to define specific API endpoints that may not fit into the auto-generated model endpoints pattern. They're perfect for:
+This guide covers both approaches and explains how they work together in your Arkos application.
 
-- Complex business logic operations
-- Cross-model operations that don't map to a single Prisma model
-- Custom authentication flows
-- Specialized API endpoints with unique requirements
+## 1. Working With Custom Routers
 
-**Important note:** Unlike auto-generated Prisma model routers, custom routers **do not** automatically include:
+Custom routers allow you to define specialized API endpoints that may not fit into the auto-generated model endpoints pattern.
 
-- Authentication checks
-- Access control
-- Request validation
-- Error handling
+### When to Use Custom Routers
 
-This guide will show you how to add these features manually when needed.
+Custom routers are perfect for:
 
-## Basic Custom Router
+- Complex business logic operations that span multiple models
+- Custom authentication flows or specialized API endpoints
+- Feature-based endpoints that don't directly map to a single Prisma model
+- Any API functionality not covered by the auto-generated Prisma model routers
+
+### Basic Custom Router
 
 Let's start with a simple custom router:
 
@@ -42,7 +42,7 @@ productStatsRouter.get(
   productStatsController.getProductStats
 );
 productStatsRouter.get(
-  "api/admin/top-sellers",
+  "/api/admin/top-sellers",
   productStatsController.getTopSellingProducts
 );
 
@@ -51,16 +51,12 @@ export default productStatsRouter;
 ```
 
 :::danger
-See that even though these routers are to be added in **Arkos** they will not be prefixed with `/api` automatically.
+Custom routers are not prefixed with `/api` automatically. You must include this prefix in your route paths if you want to maintain consistency with Arkos's auto-generated routes.
 :::
 
-:::warning important
-Note that even though **Arkos** requires file and folder name conventions is some scenarios, those does not apply here when defining custom routers unless you want to modify some auto generated endpoint created by **Arkos** for your prisma models, for more details about this see [`Customizing Prisma Models Routers Guide`](/docs/advanced-guide/customizing-prisma-models-routers).
-:::
+### Registering Custom Routers
 
-## Registering Custom Routers
-
-To add your custom router to Arkos:
+Add your custom router to Arkos by including it in the `additional` array when initializing your application:
 
 ```typescript
 // src/app.ts
@@ -77,67 +73,174 @@ arkos.init({
 });
 ```
 
-**Important:** Custom routers will be added after all built-in Arkos routers in the middleware stack. They will not overwrite any built-in routes. If you need to replace or disable built-in routers, see the [Modifying Built-in Routers Guide](/docs/api-reference/built-in-routers#modifying-built-in-routers).
+**Important:** Custom routers specified in the `additional` array are added after all built-in Arkos routers in the middleware stack. They will not overwrite any built-in routes.
 
-## Adding Request Validation
+## 2. Customizing Prisma Model Routers
 
-Arkos provides built-in validation through either Zod or class-validator. To use this in your custom routers:
+While custom routers create entirely new endpoints, you often need to extend or modify the auto-generated endpoints for your Prisma models. Arkos provides a special customization mechanism for this purpose.
 
-1. First, make sure validation is enabled in your Arkos config:
+### When to Use Prisma Model Router Customization
 
-```typescript
-// src/app.ts
-import arkos from "arkos";
+Use this approach when you want to:
 
-arkos.init({
-  validation: {
-    resolver: "zod", // or "class-validator"
-    // other validation options...
-  },
-  // other configs
-});
-```
+- Add new endpoints to an existing Prisma model's API
+- Override specific auto-generated endpoints with custom implementation
+- Disable certain auto-generated endpoints
+- Create nested routes for related models
 
-2. Create your validation schema or DTO:
+### Adding Custom Endpoints to Model Routers
 
-For details on creating validation schemas and DTOs, refer to the [Request Data Validation Guide](/docs/core-concepts/request-data-validation).
-
-3. Add validation to your router:
+To add custom endpoints to an existing Prisma model router (such as adding a `/share` endpoint to the auto-generated `/api/posts` routes):
 
 ```typescript
-// src/routers/order.router.ts
+// src/modules/post/post.router.ts
+
 import { Router } from "express";
-import { handleRequestBodyValidationAndTransformation } from "arkos/middlewares";
-import orderController from "../controllers/order.controller";
-import { CreateOrderSchema } from "../validations/create-order.schema";
+import { RouterConfig } from "arkos";
+import postController from "./post.controller";
 
-const orderRouter = Router();
+// Export configuration for the auto-generated endpoints
+export const config: RouterConfig = {
+  // Configuration options here (can be empty or non-existing if you're just adding endpoints)
+};
 
-// Use validation middleware before your controller
-orderRouter.post(
-  "/",
-  handleRequestBodyValidationAndTransformation(CreateOrderSchema),
-  orderController.createOrder
-);
+// Create a router for custom endpoints
+const router = Router();
 
-export default orderRouter;
+// Add a custom "share" endpoint to the posts model
+// This will be accessible at /api/posts/share
+router.post("/share", postController.sharePost);
+
+// Add a custom "featured" endpoint
+// This will be accessible at /api/posts/featured
+router.get("/featured", postController.getFeaturedPosts);
+
+// Export the router as default
+export default router;
 ```
 
-**Important:** Make sure the validation schema type matches your `validation.resolver` configuration. Don't pass a Zod schema when using class-validator or vice versa.
+:::tip Path resolution
+When customizing a Prisma model router, you don't need to include the full path like `/api/posts/share`. Arkos automatically prefixes your paths with the model's base path (`/api/posts` in this example). Just specify the part after the model name (`/share`).
+:::
 
-## Adding Authentication to Custom Routers
+:::danger Important naming conventions
+The router configuration **must** be exported as `config` (lowercase) and your custom router **must** be exported as the default export. If these naming conventions aren't followed, Arkos won't recognize your customizations.
+:::
+
+### Disabling Auto-Generated Endpoints
+
+You can selectively disable specific auto-generated endpoints:
+
+```typescript
+// src/modules/post/post.router.ts
+import { Router } from "express";
+import { RouterConfig } from "arkos";
+
+export const config: RouterConfig = {
+  // Disable all endpoints for this model
+  disable: true,
+
+  // Or Disable specific endpoints
+  disable: {
+    createMany: true,
+    deleteMany: true,
+  },
+};
+
+// Add custom endpoints if needed
+const router = Router();
+
+export default router;
+```
+
+When `disable: true` is set, Arkos will not generate any of the following endpoints:
+
+- `POST /api/posts`
+- `GET /api/posts/:id`
+- `PATCH /api/posts/:id`
+- `DELETE /api/posts/:id`
+- `POST /api/posts/many`
+- `GET /api/posts`
+- `PATCH /api/posts/many`
+- `DELETE /api/posts/many`
+
+You can also specify which nested endpoints to be generated:
+
+```typescript
+// src/modules/post/post.router.ts
+import { Router } from "express";
+import { RouterConfig } from "arkos";
+
+export const config: RouterConfig = {
+  parent: {
+    model: "author",
+    foreignKeyField: "authorId", // Default is parent model name + Id
+    // Only generate these specific nested endpoints
+    endpoints: ["findMany", "findOne", "createOne"],
+  },
+};
+
+export default Router();
+```
+
+### Overriding Auto-Generated Endpoints
+
+You can completely replace an auto-generated endpoint with your own implementation:
+
+```typescript
+// src/modules/post/post.router.ts
+import { Router } from "express";
+import { RouterConfig } from "arkos";
+import { prisma } from "../../utils/prisma";
+
+export const config: RouterConfig = {
+  disable: {
+    findMany: true, // you must disable the routes you area implementing yourself
+  },
+};
+
+const router = Router();
+
+// Override the default GET /api/posts endpoint
+// No need to specify the full path - just use "/"
+router.get("/", async (req, res) => {
+  // Custom implementation for listing posts
+  const publishedPosts = await prisma.post.findMany({
+    where: { published: true },
+  });
+
+  res.json(publishedPosts);
+});
+
+export default router;
+```
+
+:::warning Important
+When overriding auto-generated endpoints, you lose built-in features like authentication, access control, and interceptor middlewares. You'll need to add these manually if needed.
+:::
+
+## Comparing the Two Approaches
+
+| Feature               | Custom Routers                      | Customizing Prisma Model Routers                         |
+| --------------------- | ----------------------------------- | -------------------------------------------------------- |
+| **Purpose**           | Create entirely new endpoints       | Extend or modify existing model endpoints                |
+| **Path Base**         | You define the full path            | Based on the model name (e.g., `/api/posts`)             |
+| **Registration**      | Added to `routers.additional` array | Auto-detected based on file location                     |
+| **File Location**     | Anywhere (typically `src/routers`)  | Must be in `src/modules/model-name/model-name.router.ts` |
+| **Built-in Features** | None (add manually)                 | Preserved for auto-generated endpoints unless overridden |
+
+## Adding Authentication in Custom Routers
+
+Both custom routers and customized Prisma model router endpoints often need authentication and validation. Here's how to add it:
 
 ### Static RBAC Authentication
 
-For Static RBAC (config-based) authentication:
-
 ```typescript
-// src/routers/admin.router.ts
+// For either custom routers or customized Prisma model routers
 import { Router } from "express";
 import { authService } from "arkos/services";
-import adminController from "../controllers/admin.controller";
 
-const adminRouter = Router();
+const router = Router();
 
 // Define authentication configs for Static RBAC
 const authConfigs = {
@@ -149,115 +252,107 @@ const authConfigs = {
   },
 };
 
-// Protected admin route with access control
-adminRouter.get(
-  "/dashboard",
+// Protected route with access control
+router.get(
+  "/dashboard", // or "/share" for a customized model router
   authService.authenticate,
   authService.handleAccessControl(
     "View",
-    "admin-dashboard" // resource name
-    authConfigs.accessControl,
+    "admin-dashboard", // resource name
+    authConfigs.accessControl
   ),
-  adminController.getDashboardData
+  myController.handleRequest
 );
 
-export default adminRouter;
+export default router;
 ```
 
 :::danger
-When wanting to add `authService.handleAccessControl` remember to call `authService.authenticate` before so that the user gets first authenticated by **Arkos** so that the user will be added to `req.user` for `handleAccessControl` to use it.
+When using `authService.handleAccessControl`, always call `authService.authenticate` first to populate `req.user`.
 :::
 
 ### Dynamic RBAC Authentication
 
-For Dynamic RBAC (database-based) authentication:
-
 ```typescript
-// src/routers/report.router.ts
+// For either custom routers or customized Prisma model routers
 import { Router } from "express";
 import { authService } from "arkos/services";
-import reportController from "../controllers/report.controller";
 
-const reportRouter = Router();
+const router = Router();
 
-// Dynamic RBAC relies on database permissions
-// You only need to specify the action and resource name
-reportRouter.post(
-  "/generate",
+// Protected route with access control
+router.get(
+  "/dashboard", // or "/share" for a customized model router
   authService.authenticate,
   authService.handleAccessControl(
-    "GenerateReport", // custom action
-    "report" // resource name
+    "View",
+    "admin-dashboard" // resource name
+    // No need for acess control object as it managed on database
   ),
-  reportController.generateReport
+  myController.handleRequest
 );
 
-export default reportRouter;
+export default router;
 ```
 
-In Dynamic RBAC mode, the permissions are checked against the database rather than config files. The `resource` and `action` parameters are used to look up the corresponding permission in the database.
+## Full Example: Custom Endpoint on a Prisma Model Router
 
-### Custom
+Let's add a "share post" feature to our auto-generated Posts API:
 
 ```ts
+// src/modules/post/post.router.ts
+
+import { Router } from "express";
+import { RouterConfig } from "arkos";
 import { authService } from "arkos/services";
-import invoiceController from "../controllers/invoice.controller";
+import { handleRequestBodyValidationAndTransformation } from "arkos/middlewares";
+import { SharePostSchema } from "./dtos/share-post.schema"; // using zod
+import postService from "./post.service";
 
-const invoiceRouter = Router();
+// Configuration for auto-generated endpoints
+export const config: RouterConfig = {
+  // Keep all auto-generated endpoints
+};
 
-// Static RBAC with custom actions
+const router = Router();
+
+// Auth config for our custom endpoint
 const authConfigs = {
   accessControl: {
-    View: ["Accountant", "Admin"],
-    Create: ["Accountant", "Admin"],
-    GeneratePdf: ["Accountant", "Admin"],
-    SendEmail: ["Admin"],
+    SharePost: ["User", "Admin"], // Custom action
   },
 };
 
-// Custom action: generate PDF
-invoiceRouter.get(
-  "/:id/pdf",
+// Add custom share endpoint
+// This will be accessible at /api/posts/:id/share
+router.post(
+  "/:id/share",
   authService.authenticate,
   authService.handleAccessControl(
-    "GeneratePdf", // custom action
-    "invoice",
+    "SharePost",
+    "post",
     authConfigs.accessControl
   ),
-  invoiceController.generateInvoicePdf
+  handleRequestBodyValidationAndTransformation(SharePostSchema),
+  async (req, res) => {
+    const { id } = req.params;
+    const { recipients, message } = req.body;
+
+    try {
+      await postService.sharePost(id, recipients, message, req.user);
+      res.json({ success: true, message: "Post shared successfully" });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 );
 
-// Custom action: send email
-invoiceRouter.post(
-  "/:id/send",
-  authService.authenticate,
-  authService.handleAccessControl(
-    "SendEmail", // custom action
-    "invoice",
-    authConfigs.accessControl
-  ),
-  invoiceController.sendInvoiceEmail
-);
-
-export default invoiceRouter;
+export default router;
 ```
 
-When using Dynamic RBAC, make sure to add these custom actions to your `AuthPermissionAction` enum in your Prisma schema:
+## Full Example: Standalone Custom Router
 
-```prisma
-enum AuthPermissionAction {
-  View
-  Create
-  Update
-  Delete
-  GeneratePdf  // custom action
-  SendEmail    // custom action
-}
-```
-
-## Complex Router Example
-
-Here's a more comprehensive example combining validation and authentication:
+For features not directly tied to a Prisma model:
 
 ```typescript
 // src/routers/analytics.router.ts
@@ -265,22 +360,22 @@ import { Router } from "express";
 import { authService } from "arkos/services";
 import { handleRequestBodyValidationAndTransformation } from "arkos/middlewares";
 import analyticsController from "../controllers/analytics.controller";
-import { GenerateReportSchema } from "../validations/analytics.schema";
+import { GenerateReportSchema } from "../schemas/analytics.schema";
 
 const analyticsRouter = Router();
 
 // Static RBAC configs
 const authConfigs = {
   accessControl: {
-    View: ["analyst", "Admin"],
+    View: ["Analyst", "Admin"],
     ExportData: ["Admin"],
-    GenerateReport: ["analyst", "Admin"],
+    GenerateReport: ["Analyst", "Admin"],
   },
 };
 
 // View analytics dashboard
 analyticsRouter.get(
-  "/dashboard",
+  "/api/analytics/dashboard",
   authService.authenticate,
   authService.handleAccessControl(
     "View",
@@ -292,123 +387,103 @@ analyticsRouter.get(
 
 // Generate custom report with validation
 analyticsRouter.post(
-  "/reports",
+  "/api/analytics/reports",
   authService.authenticate,
   authService.handleAccessControl(
-    "GenerateReport", // action
-    "analytics", // route resource name
+    "GenerateReport",
+    "analytics",
     authConfigs.accessControl
   ),
   handleRequestBodyValidationAndTransformation(GenerateReportSchema),
   analyticsController.generateReport
 );
 
-// Export data (admin only)
-analyticsRouter.get(
-  "/export",
-  authService.authenticate,
-  authService.handleAccessControl(
-    "ExportData",
-    "analytics",
-    authConfigs.accessControl
-  ),
-  analyticsController.exportData
-);
-
 export default analyticsRouter;
 ```
 
-## Route Parameters and Query Handling
-
-You can define routes with parameters and handle query parameters as usual with Express:
+Then register this router:
 
 ```typescript
-// src/routers/product.router.ts
-import { Router } from "express";
-import productController from "../controllers/product.controller";
+// src/app.ts
+import arkos from "arkos";
+import analyticsRouter from "./routers/analytics.router";
 
-const productRouter = Router();
+arkos.init({
+  routers: {
+    additional: [analyticsRouter],
+  },
+  // other configs
+});
+```
 
-// Route with parameters
-productRouter.get("/api/:id/reviews", productController.getProductReviews);
+## Configuration Type Reference
 
-// Route with query parameters
-productRouter.get("/api/search", productController.searchProducts);
+Here's the complete type definition for `RouterConfig`:
 
-export default productRouter;
+```typescript
+export type RouterEndpoint =
+  | "createOne"
+  | "findOne"
+  | "updateOne"
+  | "deleteOne"
+  | "findMany"
+  | "createMany"
+  | "updateMany"
+  | "deleteMany";
+
+export type RouterConfig = {
+  parent?: {
+    // Parent model name in kebab-case and singular
+    model?: string;
+
+    // Field that stores the parent ID relation (defaults to `${modelName}Id`)
+    foreignKey?: string;
+
+    // Which nested endpoints to generate
+    endpoints?: "*" | RouterEndpoint[];
+  };
+
+  // Disable specific endpoints or all endpoints
+  disable?:
+    | boolean
+    | {
+        createOne?: boolean;
+        findOne?: boolean;
+        updateOne?: boolean;
+        deleteOne?: boolean;
+        createMany?: boolean;
+        findMany?: boolean;
+        updateMany?: boolean;
+        deleteMany?: boolean;
+      };
+};
 ```
 
 ## Best Practices
 
-When creating custom routers:
+1. **Choose the Right Approach**:
 
-1. **Organize by Feature**: Group related endpoints in the same router
-2. **Keep Controllers Thin**: Move business logic to separate service classes
-3. **Always Add Validation**: Validate request data to prevent security issues and bugs
-4. **Secure Routes Properly**: Apply authentication and access control checks as needed
-5. **Use Descriptive Names**: Choose clear, descriptive route and action names
-6. **Document APIs**: Add comments or use tools like Swagger for API documentation
-7. **Consider Error Handling**: Wrap controller methods with error handling where needed
+   - If the endpoint is closely related to a Prisma model, customize that model's router
+   - If it's a standalone feature, create a custom router
 
-## Authentication Types Reference
+2. **Consistent Path Structure**:
 
-When using `authService.handleAccessControl`, understand these key types:
+   - For model-related endpoints: `/api/model-name/operation`
+   - For feature-based endpoints: `/api/feature/operation`
 
-```typescript
-/**
- * Base set of controller actions available to all controllers.
- *
- * @example
- * const action: AccessAction = "Create";
- * const customAction: AccessAction = "Export"; // Custom action
- */
-export type AccessAction = "Create" | "Update" | "Delete" | "View" | string;
+3. **Authentication & Validation**:
 
-/**
- * Rules defining access control for different controller actions.
- * The array contains role names that are allowed to perform the action.
- *
- * @example
- * const rules: AccessControlRules = {
- *   Create: ["Admin", "Manager"],
- *   Update: ["Admin"],
- *   Delete: ["Admin"],
- *   View: ["Admin", "User", "Guest"]
- * };
- */
-export type AccessControlRules = {
-  [key in AccessAction]: string[];
-};
+   - Always add proper authentication and request validation
+   - Reuse middlewares for consistent security across endpoints
 
-/**
- * Configuration for access control.
- *
- * @example
- * // All actions allowed for these roles
- * const config1: AccessControlConfig = ["Admin", "Manager"];
- *
- * // Specific rules per action
- * const config2: AccessControlConfig = {
- *   Create: ["Admin"],
- *   View: ["User", "Admin"]
- * };
- */
-export type AccessControlConfig = string[] | Partial<AccessControlRules>;
-```
+4. **Clear Module Organization**:
 
-You can also read more about the `authService` object itself on [clicking here](/docs/api-reference/auth-service-object)
+   - Group related custom endpoints in the same router
+   - Keep your file structure clean and predictable
 
-## Built-in Routers for Reference
-
-For reference, Arkos provides these built-in routers:
-
-- **Welcome Endpoint Router**: A simple welcome endpoint
-- **File Uploader Router**: Handles file uploads, serving static files, and file deletion
-- **Authentication Router**: Provides authentication endpoints for user management
-- **Prisma Models Router**: Automatically generates RESTful API endpoints for all your Prisma models
-- **Available Resources & Routes Router**: Provides endpoints to discover available API resources and routes
-
-For more details on built-in routers, see the [Built-in Routers Guide](/docs/api-reference/built-in-routers).
+5. **Descriptive Naming**:
+   - Use clear route and action names
+   - Document complex endpoints with comments
 
 ## Next Steps
 

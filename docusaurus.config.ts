@@ -62,7 +62,7 @@ const config: Config = {
     ],
   ],
   themeConfig: {
-    image: "img/docusaurus-social-card.jpg",
+    image: "img/arkos-social-card.webp",
     navbar: {
       logo: {
         alt: "Arkos js Logo",

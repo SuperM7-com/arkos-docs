@@ -51,10 +51,10 @@ arkos.init({
 The `configureApp` function runs before any Arkos middleware is applied, giving you a chance to set up configurations that need to be in place early in the application lifecycle.
 
 :::warning
-You do not need to call `app.listen` inside `configureApp` because this is function that gives you acess to add custom configurations beyond **Arkos** features on the top-level of the middleware/configuration stack. In the end everything will go down until **Arkos** call `app.listen`.
+You do not need to call `app.listen` inside `configureApp` because this function gives you access to add custom configurations beyond **Arkos** features on the top-level of the middleware/configuration stack. When a port is specified, Arkos will create an HTTP server and call `server.listen` after all configurations are complete.
 :::
 
-As mentioned on the warning above, is not recommended to call `app.listen` inside `configureApp`. If you would like to call `app.listen` on your own, for example to add websockets see [Calling app.listen By Yourself Section](/docs/guide/accessing-the-express-app#calling-applisten-by-yourself)
+As mentioned in the warning above, it's not recommended to call `app.listen` inside `configureApp`. If you would like to customize the HTTP server or add websockets, see [Accessing The HTTP Server](#accessing-the-http-server) section.
 
 ### 2. Through the Arkos Instance
 
@@ -66,7 +66,7 @@ import arkos from "arkos";
 
 // Initialize Arkos
 const app = await arkos.init({
-  port: undefined, // so that Arkos won't call app.listen [recommended]
+  port: undefined, // so that Arkos won't create an HTTP server [recommended for custom server setup]
   // Arkos configurations
 });
 
@@ -75,12 +75,102 @@ const app = await arkos.init({
 // Now you can use the Express app
 app.set("view engine", "pug");
 app.use("/special-route", specialMiddleware);
-app.listen(8000, () => {
-  console.info(`App running on port 8000`);
+
+// If port is undefined, you need to create your own HTTP server or call app.listen
+app.listen(process.env.HOST || 8000, () =>
+  console.info(`Server waiting on localhost:8000`)
+);
+
+// See 'Creating Your Own HTTP Server' section
+```
+
+This approach is useful when you need to perform configurations after Arkos has been fully initialized but want to control the server creation and listening yourself.
+
+## Accessing The HTTP Server
+
+### Using the `configureServer` Hook
+
+Arkos provides a `configureServer` hook that gives you access to the HTTP server before it starts listening:
+
+```ts
+// src/app.ts
+import arkos from "arkos";
+import { Server } from "socket.io";
+
+arkos.init({
+  configureServer: async (server) => {
+    // Access to the HTTP server before it starts listening
+    // You can attach WebSockets or perform other server configurations
+
+    // Example: Attach Socket.IO
+    const io = new Server(server);
+
+    io.on("connection", (socket) => {
+      console.log("Client connected");
+
+      socket.on("message", (data) => {
+        io.emit("broadcast", data);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected");
+      });
+    });
+  },
+  // Other Arkos configurations
 });
 ```
 
-This approach is useful when you need to perform configurations after Arkos has been fully initialized but server not started yet.
+:::warning
+The `configureServer` hook is only executed when a port is specified in the configuration. If `port` is undefined, the HTTP server is not created, and this hook will not be called.
+:::
+
+### Creating Your Own HTTP Server
+
+When you need full control over the HTTP server creation and configuration:
+
+```ts
+// src/app.ts
+import arkos from "arkos";
+import { Server } from "socket.io";
+import http from "http";
+
+const startServer = async () => {
+  // Initialize Arkos without creating an HTTP server
+  const app = await arkos.init({
+    // Important: Set port to undefined so Arkos won't create an HTTP server
+    port: undefined,
+    // Other Arkos configurations
+  });
+
+  // Create your own HTTP server with the Express app
+  const server = http.createServer(app);
+
+  // Configure the HTTP server or attach additional features
+  const io = new Server(server);
+
+  // Configure Socket.IO
+  io.on("connection", (socket) => {
+    console.log("Client connected");
+
+    socket.on("message", (data) => {
+      io.emit("broadcast", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected");
+    });
+  });
+
+  // Start the server manually
+  const port = process.env.PORT || 8000;
+  server.listen(port, () => {
+    console.log(`Server with Socket.IO listening on port ${port}`);
+  });
+};
+
+startServer();
+```
 
 ## Timing Considerations
 
@@ -88,6 +178,7 @@ Understanding when your code executes in relation to the Arkos middleware stack 
 
 1. **Using `configureApp`**: Code runs before any Arkos middleware is applied
 2. **After `arkos.init()`**: Code runs after all Arkos configuration is complete
+3. **Using `configureServer`**: Code runs after Express app is configured but before the server starts (only if port is specified)
 
 Here's a diagram of the execution order:
 
@@ -122,9 +213,26 @@ Here's a diagram of the execution order:
 └───────────────┬───────────────────────┘
                 │
                 ▼
-┌───────────────┴───────────────────────┐
-│ Code after arkos.init() executes      │
-└───────────────────────────────────────┘
+If port is specified:                    If port is undefined:
+┌────────────────────────────┐          ┌────────────────────────────┐
+│ HTTP server created        │          │ Code after arkos.init()    │
+└────────────────┬───────────┘          │ executes                   │
+                 │                      │ (custom server setup)      │
+                 ▼                      └────────────────────────────┘
+┌────────────────┴───────────┐
+│ configureServer executes   │
+└────────────────┬───────────┘
+                 │
+                 ▼
+┌────────────────┴───────────┐
+│ Code after arkos.init()    │
+│ executes                   │
+└────────────────┬───────────┘
+                 │
+                 ▼
+┌────────────────┴───────────┐
+│ Server starts listening    │
+└────────────────────────────┘
 ```
 
 ## Common Use Cases
@@ -168,9 +276,38 @@ arkos.init({
 });
 ```
 
-### Calling `app.listen` By Yourself
+### Adding WebSocket Support
 
-#### Adding WebSocket Support
+You can add WebSocket support using the `configureServer` hook when you let Arkos create the HTTP server:
+
+```ts
+// src/app.ts
+import arkos from "arkos";
+import { Server } from "socket.io";
+
+await arkos.init({
+  configureServer: async (server) => {
+    // Attach Socket.IO to the HTTP server
+    const io = new Server(server);
+
+    // Configure Socket.IO
+    io.on("connection", (socket) => {
+      console.log("Client connected");
+
+      socket.on("message", (data) => {
+        io.emit("broadcast", data);
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected");
+      });
+    });
+  },
+  // Other Arkos configurations
+});
+```
+
+Alternatively, if you need more control over the HTTP server creation:
 
 ```ts
 // src/app.ts
@@ -179,17 +316,17 @@ import { Server } from "socket.io";
 import http from "http";
 
 const startServer = async () => {
-  // Initialize Arkos but don't let it start listening
+  // Initialize Arkos without creating an HTTP server
   const app = await arkos.init({
-    // Important: Prevent Arkos from automatically listening
+    // Important: Set port to undefined so you can create your own server
     port: undefined,
     // Other Arkos configurations
   });
 
-  // Create HTTP server with the Express app
+  // Create your own HTTP server with the Express app
   const server = http.createServer(app);
 
-  // Attach Socket.IO to the same HTTP server
+  // Attach Socket.IO to the HTTP server
   const io = new Server(server);
 
   // Configure Socket.IO
@@ -255,13 +392,17 @@ arkos.init({
 
 1. **Early Configuration**: Use `configureApp` for settings that need to be applied before any middleware runs.
 
-2. **Late Configuration**: Use post-initialization access for features that depend on Arkos's setup being complete.
+2. **Server Configuration**: Use `configureServer` for adding features that need access to the HTTP server like WebSockets (only works when port is specified).
 
-3. **Avoid Conflicts**: Be careful not to override Arkos's core functionality when adding custom Express configurations.
+3. **Custom Server Setup**: Set `port: undefined` when you need complete control over server creation and choose between directly calling `app.listen()` or creating your own HTTP server.
 
-4. **Maintain Middleware Order**: Be mindful of the order in which middleware is applied, as it can affect how requests are processed.
+4. **Late Configuration**: Use post-initialization access for features that depend on Arkos's setup being complete.
 
-5. **Documentation**: Document any custom Express configurations to help with maintenance and onboarding.
+5. **Avoid Conflicts**: Be careful not to override Arkos's core functionality when adding custom Express configurations.
+
+6. **Maintain Middleware Order**: Be mindful of the order in which middleware is applied, as it can affect how requests are processed.
+
+7. **Documentation**: Document any custom Express configurations to help with maintenance and onboarding.
 
 ## Advanced: Combining with Custom Middlewares
 
@@ -292,6 +433,6 @@ See [Modifying Built-in Middlewares](/docs/advanced-guide/modifying-built-in-mid
 
 ## Conclusion
 
-Accessing the Express app in Arkos gives you the flexibility to extend and customize your application beyond the framework's built-in features. Whether you need to configure views, set up WebSockets, or apply Express-specific settings, Arkos provides multiple ways to work with the underlying Express instance while still benefiting from its streamlined API development experience.
+Accessing the Express app and HTTP server in Arkos gives you the flexibility to extend and customize your application beyond the framework's built-in features. Whether you need to configure views, set up WebSockets, or apply Express-specific settings, Arkos provides multiple ways to work with the underlying Express instance and HTTP server while still benefiting from its streamlined API development experience.
 
-Remember to consider the timing of your Express configurations relative to Arkos's initialization process to ensure your application behaves as expected.
+Remember to consider the timing of your Express configurations relative to Arkos's initialization process and understand how the `port` configuration affects server creation. When you need the HTTP server to be created automatically by Arkos, specify a port; when you need complete control over server creation, set `port: undefined` and create your own server.
