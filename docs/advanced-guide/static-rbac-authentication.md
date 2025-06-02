@@ -159,7 +159,7 @@ Dive deep about allowed username fields and also see how to login with nested fi
 
 #### `lastLoginAt: DateTime?`
 
-- Optional timestamp tracking User's most recent login
+- Timestamp tracking User's most recent login
 - Allows tracking of User authentication events
 
 #### `isSuperUser: Boolean`

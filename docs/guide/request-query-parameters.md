@@ -10,7 +10,7 @@ Arkos provides a sophisticated mechanism to transform URL query parameters into 
 
 ### 1. Basic Filtering Transformation
 
-```bash
+```curl
 GET /api/users?age=25&status=active
 ```
 
@@ -96,6 +96,176 @@ const products = await prisma.products.findMany({
   skip: 300,
 });
 ```
+
+### 5. Limiting
+
+The limiting feature controls how many records are returned in the response. It works in conjunction with pagination.
+
+By default, queries return 30 records. You can change this using the `limit` parameter:
+
+```
+GET /api/products?limit=10
+```
+
+Translates to:
+
+```ts
+const products = await prisma.product.findMany({
+  take: 10,
+});
+```
+
+#### Limit with Pagination
+
+When combining limit with pagination, the limit determines how many records are returned per page:
+
+```
+GET /api/products?page=2&limit=50
+```
+
+Translates to:
+
+```ts
+const products = await prisma.product.findMany({
+  take: 50,
+  skip: 50, // (page - 1) * limit = (2 - 1) * 50
+});
+```
+
+#### Limit Range
+
+You can use any positive integer for the limit. Common examples:
+
+```
+GET /api/products?limit=5    // Returns 5 records
+GET /api/products?limit=100  // Returns 100 records
+GET /api/products?limit=1    // Returns 1 record
+```
+
+#### Combining Sorting and Limiting
+
+These features work seamlessly together:
+
+```
+GET /api/products?sort=-price&limit=10
+```
+
+This returns the 10 most expensive products:
+
+```ts
+const products = await prisma.product.findMany({
+  orderBy: [{ price: "desc" }],
+  take: 10,
+});
+```
+
+#### Full Example with All Features
+
+```
+GET /api/products?search=laptop&price[gte]=500&sort=-rating,-price&page=1&limit=20&fields=id,name,price,rating
+```
+
+This complex query will:
+
+- Search for 'laptop' in string fields
+- Filter products with price >= 500
+- Sort by rating (descending), then price (descending)
+- Get the first page with 20 items
+- Return only id, name, price, and rating fields
+
+Translates to:
+
+```ts
+const products = await prisma.product.findMany({
+  where: {
+    OR: [
+      { name: { contains: "laptop", mode: "insensitive" } },
+      { description: { contains: "laptop", mode: "insensitive" } },
+      // other string fields
+      { price: { gte: 500 } },
+    ],
+  },
+  orderBy: [{ rating: "desc" }, { price: "desc" }],
+  skip: 0,
+  take: 20,
+  select: {
+    id: true,
+    name: true,
+    price: true,
+    rating: true,
+  },
+});
+```
+
+### 6. Sorting
+
+The sorting feature allows you to order results by one or more fields in ascending or descending order.
+
+#### Basic Sorting (Ascending)
+
+```
+GET /api/products?sort=price
+```
+
+Translates to:
+
+```ts
+const products = await prisma.product.findMany({
+  orderBy: [{ price: "asc" }],
+});
+```
+
+#### Descending Sort
+
+To sort in descending order, prefix the field name with a minus sign `-`:
+
+```
+GET /api/products?sort=-price
+```
+
+Translates to:
+
+```ts
+const products = await prisma.product.findMany({
+  orderBy: [{ price: "desc" }],
+});
+```
+
+#### Multiple Field Sorting
+
+You can sort by multiple fields using comma separation. The order matters - the first field is the primary sort, the second is the secondary sort, and so on:
+
+```
+GET /api/products?sort=-price,name
+```
+
+This will first sort by price in descending order, then by name in ascending order:
+
+```ts
+const products = await prisma.product.findMany({
+  orderBy: [{ price: "desc" }, { name: "asc" }],
+});
+```
+
+#### Complex Sorting Example
+
+```
+GET /api/users?sort=-createdAt,lastName,firstName
+```
+
+Translates to:
+
+```ts
+const users = await prisma.user.findMany({
+  orderBy: [{ createdAt: "desc" }, { lastName: "asc" }, { firstName: "asc" }],
+});
+```
+
+This will:
+
+1. Sort by creation date (newest first)
+2. Then by last name alphabetically
+3. Finally by first name alphabetically
 
 ### 5. Selecting, Adding And Removing Fields
 

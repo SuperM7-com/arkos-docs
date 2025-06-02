@@ -15,7 +15,7 @@ In order to explore the following available request you must setup wether a `Sta
 
 ## Base URL
 
-```
+```curl
 http://localhost:8000/api
 ```
 

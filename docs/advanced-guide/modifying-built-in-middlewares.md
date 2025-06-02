@@ -77,8 +77,8 @@ arkos.init({
 
       // Custom rate limiting implementation
       globalRateLimit: rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        limit: 500, // 500 requests per windowMs
+        windowMs: 5000, // 15 minutes
+        limit: 100, // 500 requests per windowMs
         message: "Too many requests, please try again later.",
       }),
 

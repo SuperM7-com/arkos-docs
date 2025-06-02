@@ -11,20 +11,24 @@ title: Authentication Interceptor Middlewares
 
 ### User Profile Management
 
-| Route       | Method | Description                     | Authentication Required |
-| ----------- | ------ | ------------------------------- | ----------------------- |
-| `/users/me` | GET    | Retrieve current user's profile | Yes                     |
-| `/users/me` | PATCH  | Update current user's profile   | Yes                     |
-| `/users/me` | DELETE | Delete current user's account   | Yes                     |
+| Route           | Method | Description                     | Authentication Required |
+| --------------- | ------ | ------------------------------- | ----------------------- |
+| `/api/users/me` | GET    | Retrieve current user's profile | Yes                     |
+| `/api/users/me` | PATCH  | Update current user's profile   | Yes                     |
+| `/api/users/me` | DELETE | Delete current user's account   | Yes                     |
+
+:::tip
+When a user calls DELETE `/users/me`, the actual data won't be deleted on the database records **Arkos** will only set `deletedSelfAccountAt` to the current date of request and he will no longer be able to make login nor any other `authenticated` endpoint. In order do actually delete the record you may use `afterDeleteMe` to do it.
+:::
 
 ### Authentication Endpoints
 
-| Route                   | Method | Description          | Authentication Required |
-| ----------------------- | ------ | -------------------- | ----------------------- |
-| `/auth/login`           | POST   | User authentication  | No                      |
-| `/auth/logout`          | DELETE | End user session     | Yes                     |
-| `/auth/signup`          | POST   | User registration    | No                      |
-| `/auth/update-password` | POST   | Change user password | Yes                     |
+| Route                       | Method | Description          | Authentication Required |
+| --------------------------- | ------ | -------------------- | ----------------------- |
+| `/api/auth/login`           | POST   | User authentication  | No                      |
+| `/api/auth/logout`          | DELETE | End user session     | Yes                     |
+| `/api/auth/signup`          | POST   | User registration    | No                      |
+| `/api/auth/update-password` | POST   | Change user password | Yes                     |
 
 ## Interceptor Middlewares
 
@@ -49,13 +53,13 @@ For each authentication route, you can create two types of middlewares:
 
 The following interceptors are available for intercept authentication related requests:
 
-| Route                   | Middlewares                                   | Description              |
-| ----------------------- | --------------------------------------------- | ------------------------ |
-| `/users/me`             | `beforeGetMe`, `afterGetMe`                   | User profile management  |
-| `/auth/login`           | `beforeLogin`, `afterLogin`                   | User authentication      |
-| `/auth/logout`          | `beforeLogout`, `afterLogout`                 | User session termination |
-| `/auth/signup`          | `beforeSignup`, `afterSignup`                 | User registration        |
-| `/auth/update-password` | `beforeUpdatePassword`, `afterUpdatePassword` | Password change          |
+| Route                       | Middlewares                                                                                       | Description              |
+| --------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------ |
+| `/api/users/me`             | `beforeGetMe`, `afterGetMe`, `beforeUpdateMe`, `afterUpdateMe`, `beforeDeleteMe`, `afterDeleteMe` | User profile management  |
+| `/api/auth/login`           | `beforeLogin`, `afterLogin`                                                                       | User authentication      |
+| `/api/auth/logout`          | `beforeLogout`, `afterLogout`                                                                     | User session termination |
+| `/api/auth/signup`          | `beforeSignup`, `afterSignup`                                                                     | User registration        |
+| `/api/auth/update-password` | `beforeUpdatePassword`, `afterUpdatePassword`                                                     | Password change          |
 
 ### Middleware Execution Flow
 
