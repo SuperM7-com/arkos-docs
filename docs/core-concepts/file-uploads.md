@@ -142,7 +142,7 @@ When implementing file updates in your application:
 
 ```ts
 // src/modules/post/post.middlewares.ts
-import { getFileUploaderServices } from "arkos/services";
+import { getFileUploadServices } from "arkos/services";
 import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
 import { prisma } from "../../utils/prisma";
@@ -150,12 +150,15 @@ import { prisma } from "../../utils/prisma";
 export const beforeUpdateOne = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Uploads the image if it haves anything in request
-    // NB: always call the getFileUploaderServices inside a function not outside
-    const imageUrl =
-      await getFileUploaderServices().imageUploaderService.upload(req, res, {
+    // NB: always call the getFileUploadServices inside a function not outside
+    const imageUrl = await getFileUploadServices().imageUploadService.upload(
+      req,
+      res,
+      {
         format: "webp",
         resizeTo: 500,
-      });
+      }
+    );
 
     // Checks if a image was uploaded, if yest attach it to the body
     if (imageUrl) {
@@ -185,8 +188,8 @@ export const afterUpdateOne = catchAsync(
     // Checks if a file was uploaded by checking the req.body.image field
     // If yes delete the old one
     if (req.body.image)
-      getFileUploaderServices()
-        .imageUploaderService.deleteByUrl(req.query.ignoreFields.oldImage)
+      getFileUploadServices()
+        .imageUploadService.deleteByUrl(req.query.ignoreFields.oldImage)
         .catch((err) => {
           console.log(err);
         });
@@ -196,7 +199,7 @@ export const afterUpdateOne = catchAsync(
 );
 ```
 
-You can refer to the [getFileUploaderServices Function Guide](/docs/api-reference/file-uploader-services-function-guide) for more guidance.
+You can refer to the [getFileUploadServices Function Guide](/docs/api-reference/file-upload-services-function-guide) for more guidance.
 
 :::tip important
 You could even revert the updated post and throw an error if failed to delete the old image, but here we just let it go because it was already changed and if old was delete or not only matters to the admin of the server.

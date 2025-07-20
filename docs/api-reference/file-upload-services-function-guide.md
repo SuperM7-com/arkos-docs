@@ -2,9 +2,9 @@
 sidebar_position: 9
 ---
 
-# File Uploader Services Guide
+# File Upload Services Guide
 
-The `getFileUploaderServices` function provides a centralized way to handle file uploads in your **Arkos** application. It creates and returns specialized file uploader services for different file types (images, videos, documents, and general files), each preconfigured with appropriate size limits, file type validation, and processing capabilities.
+The `getFileUploadServices` function provides a centralized way to handle file uploads in your **Arkos** application. It creates and returns specialized file uploader services for different file types (images, videos, documents, and general files), each preconfigured with appropriate size limits, file type validation, and processing capabilities.
 
 ## Key Features
 
@@ -15,17 +15,17 @@ The `getFileUploaderServices` function provides a centralized way to handle file
 - **URL generation**: Automatically generates accessible URLs for uploaded files
 - **File deletion**: Ability to delete files using their URLs
 
-## When to Call `getFileUploaderServices`
+## When to Call `getFileUploadServices`
 
-Always call `getFileUploaderServices` inside a function or route handler, not at the module level. This ensures that your **Arkos** configuration is fully loaded before the services are initialized.
+Always call `getFileUploadServices` inside a function or route handler, not at the module level. This ensures that your **Arkos** configuration is fully loaded before the services are initialized.
 
 ```typescript
 // ❌ Don't do this at the module level
-const uploaders = getFileUploaderServices(); // May use incomplete config
+const uploaders = getFileUploadServices(); // May use incomplete config
 
 // ✅ Do this inside a function or route handler
 function handleUpload() {
-  const uploaders = getFileUploaderServices(); // Configuration is ready
+  const uploaders = getFileUploadServices(); // Configuration is ready
   // Use uploaders here
 }
 ```
@@ -38,7 +38,7 @@ The recommended approach is to use the uploader services in custom middlewares. 
 
 ```typescript
 // src/modules/post/post.middlewares.ts
-import { getFileUploaderServices } from "arkos/services";
+import { getFileUploadServices } from "arkos/services";
 import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 import { catchAsync } from "arkos/error-handler";
 import { prisma } from "../../utils/prisma";
@@ -46,12 +46,15 @@ import { prisma } from "../../utils/prisma";
 export const beforeUpdateOne = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
     // Uploads the image if it exists in request
-    // NB: always call the getFileUploaderServices inside a function not outside
-    const imageUrl =
-      await getFileUploaderServices().imageUploaderService.upload(req, res, {
+    // NB: always call the getFileUploadServices inside a function not outside
+    const imageUrl = await getFileUploadServices().imageUploadService.upload(
+      req,
+      res,
+      {
         format: "webp",
         resizeTo: 500,
-      });
+      }
+    );
 
     // Checks if an image was uploaded, if yes attach it to the body
     if (imageUrl) {
@@ -81,8 +84,8 @@ export const afterUpdateOne = catchAsync(
     // Checks if a file was uploaded by checking the req.body.image field
     // If yes delete the old one
     if (req.body.image)
-      getFileUploaderServices()
-        .imageUploaderService.deleteFileByUrl(req.query.ignoredFields.oldImage)
+      getFileUploadServices()
+        .imageUploadService.deleteFileByUrl(req.query.ignoredFields.oldImage)
         .catch((err) => {
           console.log(err);
         });
@@ -98,7 +101,7 @@ For direct use in routes:
 
 ```typescript
 import { Router } from "express";
-import { getFileUploaderServices } from "arkos/services";
+import { getFileUploadServices } from "arkos/services";
 import { catchAsync } from "arkos/error-handler";
 
 const router = Router();
@@ -106,9 +109,9 @@ const router = Router();
 router.post(
   "/upload-avatar",
   catchAsync(async (req, res, next) => {
-    const { imageUploaderService } = getFileUploaderServices();
+    const { imageUploadService } = getFileUploadServices();
 
-    const imageUrl = await imageUploaderService.upload(req, res, {
+    const imageUrl = await imageUploadService.upload(req, res, {
       format: "webp",
       resizeTo: 300,
     });
@@ -125,23 +128,23 @@ export default router;
 
 ## Available Services
 
-The `getFileUploaderServices` function returns an object with four specialized services:
+The `getFileUploadServices` function returns an object with four specialized services:
 
 ```typescript
 const {
-  imageUploaderService,
-  videoUploaderService,
-  documentUploaderService,
-  fileUploaderService,
-} = getFileUploaderServices();
+  imageUploadService,
+  videoUploadService,
+  documentUploadService,
+  fileUploadService,
+} = getFileUploadServices();
 ```
 
-| Service                   | Purpose              | Default Size Limit | File Types                           |
-| ------------------------- | -------------------- | ------------------ | ------------------------------------ |
-| `imageUploaderService`    | For image uploads    | 15 MB              | jpeg, jpg, png, gif, webp, svg, etc. |
-| `videoUploaderService`    | For video uploads    | 5 GB               | mp4, avi, mov, mkv, webm, etc.       |
-| `documentUploaderService` | For document uploads | 50 MB              | pdf, doc, docx, xls, xlsx, etc.      |
-| `fileUploaderService`     | For any file type    | 5 GB               | All file types                       |
+| Service                 | Purpose              | Default Size Limit | File Types                           |
+| ----------------------- | -------------------- | ------------------ | ------------------------------------ |
+| `imageUploadService`    | For image uploads    | 15 MB              | jpeg, jpg, png, gif, webp, svg, etc. |
+| `videoUploadService`    | For video uploads    | 5 GB               | mp4, avi, mov, mkv, webm, etc.       |
+| `documentUploadService` | For document uploads | 50 MB              | pdf, doc, docx, xls, xlsx, etc.      |
+| `fileUploadService`     | For any file type    | 5 GB               | All file types                       |
 
 ## Upload Methods
 
@@ -152,10 +155,10 @@ Each service provides methods for handling file uploads:
 ```typescript
 export const uploadProfilePicture = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
-    const { imageUploaderService } = getFileUploaderServices();
+    const { imageUploadService } = getFileUploadServices();
 
     // Using the upload method
-    const imageUrl = await imageUploaderService.upload(req, res);
+    const imageUrl = await imageUploadService.upload(req, res);
 
     // Update user profile with the new image URL
     await prisma.user.update({
@@ -176,13 +179,13 @@ export const uploadProfilePicture = catchAsync(
 ```typescript
 export const uploadProductGallery = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
-    const { imageUploaderService } = getFileUploaderServices();
+    const { imageUploadService } = getFileUploadServices();
 
     // Set multiple=true in the query parameters
     req.query.multiple = "true";
 
     // Upload multiple images
-    const imageUrls = await imageUploaderService.upload(req, res);
+    const imageUrls = await imageUploadService.upload(req, res);
 
     // Update product with the new gallery URLs
     await prisma.product.update({
@@ -205,10 +208,10 @@ When uploading images, you can provide additional options for processing:
 ```typescript
 export const uploadWithProcessing = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
-    const { imageUploaderService } = getFileUploaderServices();
+    const { imageUploadService } = getFileUploadServices();
 
     // Upload and process the image
-    const imageUrl = await imageUploaderService.upload(req, res, {
+    const imageUrl = await imageUploadService.upload(req, res, {
       // Convert to WebP format
       format: "webp",
 
@@ -234,7 +237,7 @@ For more control over the upload process, you can also use the middleware-based 
 
 ```typescript
 import { Router } from "express";
-import { getFileUploaderServices } from "arkos/services";
+import { getFileUploadServices } from "arkos/services";
 
 const router = Router();
 
@@ -242,8 +245,8 @@ router.post(
   "/upload-document",
   // This creates middleware that handles the upload but doesn't complete the response
   (req, res, next) => {
-    const { documentUploaderService } = getFileUploaderServices();
-    documentUploaderService.handleSingleUpload()(req, res, next);
+    const { documentUploadService } = getFileUploadServices();
+    documentUploadService.handleSingleUpload()(req, res, next);
   },
   (req, res) => {
     // The file is now available in req.file
@@ -278,8 +281,8 @@ export const deleteProfilePicture = catchAsync(
 
     if (profilePicture) {
       // Delete the file
-      const { imageUploaderService } = getFileUploaderServices();
-      await imageUploaderService.deleteFileByUrl(profilePicture);
+      const { imageUploadService } = getFileUploadServices();
+      await imageUploadService.deleteFileByUrl(profilePicture);
 
       // Update the user record
       await prisma.user.update({
@@ -330,8 +333,8 @@ import { ArkosRequest, ArkosResponse, ArkosNextFunction } from "arkos";
 // This is a custom middleware and not an Arkos interceptor middleware
 export const uploadUserDocument = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
-    const { documentUploaderService } = getFileUploaderServices();
-    const documentUrl = await documentUploaderService.upload(
+    const { documentUploadService } = getFileUploadServices();
+    const documentUrl = await documentUploadService.upload(
       req,
       res,
       "document"
@@ -347,7 +350,7 @@ export const uploadUserDocument = catchAsync(
 
 ## Best Practices
 
-1. **Always call `getFileUploaderServices` inside functions**, not at the module level
+1. **Always call `getFileUploadServices` inside functions**, not at the module level
 2. **Select the right service** for the file type you're handling
 3. **Validate files on the client-side** before upload to improve user experience
 4. **Set appropriate file size limits** to prevent server overload
@@ -397,10 +400,10 @@ async function uploadProfileImage(file) {
 ```typescript
 export const updateProfilePicture = catchAsync(
   async (req: ArkosRequest, res: ArkosResponse, next: ArkosNextFunction) => {
-    const { imageUploaderService } = getFileUploaderServices();
+    const { imageUploadService } = getFileUploadServices();
 
     // Upload and optimize the profile picture
-    const imageUrl = await imageUploaderService.upload(req, res, {
+    const imageUrl = await imageUploadService.upload(req, res, {
       format: "webp",
       resizeTo: 300, // Create a reasonably sized profile picture
     });
@@ -420,7 +423,7 @@ export const updateProfilePicture = catchAsync(
 
       // Delete the old profile picture if it exists
       if (profilePicture) {
-        imageUploaderService.deleteFileByUrl(profilePicture).catch((err) => {
+        imageUploadService.deleteFileByUrl(profilePicture).catch((err) => {
           console.error("Failed to delete old profile picture:", err);
         });
       }
@@ -459,7 +462,7 @@ export const updateProfilePicture = catchAsync(
    - Adjust the size limits in your configuration
 
 4. **Configuration not being applied**
-   - Make sure you're calling `getFileUploaderServices` inside a function
+   - Make sure you're calling `getFileUploadServices` inside a function
    - Verify your Arkos configuration is properly set up
 
 ### Debug Tips

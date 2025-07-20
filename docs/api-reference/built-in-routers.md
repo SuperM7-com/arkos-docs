@@ -29,7 +29,7 @@ app.get("/api", (req, res) => {
 - Can be disabled or replaced with your own implementation
 - See [Modifying Built-in Routers Guide](/docs/api-reference/built-in-routers#modifying-built-in-routers)
 
-## File Uploader Router
+## File Upload Router
 
 Handles file uploads, serving static files, and file deletion operations.
 

@@ -190,8 +190,9 @@ import { BaseService } from "arkos/services";
 import { prisma } from "../../utils/prisma";
 import { AppError } from "arkos/error-handler";
 import { authService } from "arkos/services";
+import prisma from "../../utils/prisma";
 
-class UserService extends BaseService {
+class UserService extends BaseService<typeof prisma.user> {
   constructor() {
     super("user");
   }
